@@ -6,15 +6,15 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:34:04 by martalop          #+#    #+#             */
-/*   Updated: 2024/07/16 19:39:21 by martalop         ###   ########.fr       */
+/*   Updated: 2024/07/18 12:55:17 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <stdio.h>
 #include <stdlib.h>
-#include "readline/readline.h"
-#include "readline/history.h"
+#include <readline/readline.h>
+#include <readline/history.h>
 
-int	main()
+int	main(int argc, char **argv, char **env)
 {
 	char	*str;
 	int		i;
