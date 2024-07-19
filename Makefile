@@ -6,25 +6,26 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/07/18 13:12:54 by ineimatu         ###   ########.fr        #
+#    Updated: 2024/07/18 16:35:18 by martalop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = MINISHELL
+NAME = minishell
 
 SRC = main.c
 
 OBJ = $(SRC:.c=.o)
 
-CC = cc -lreadline
+CC = cc
+
+RFLAG = -lreadline
 
 CFLAGS = -Wall -Werror -Wextra
 
 all: $(NAME)
-		$(MAKE) $(NAME)
 
-$(NAME): Makefle minishell.h $(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+$(NAME): Makefile minishell.h $(OBJ)
+		$(CC) $(RFLAG) $(CFLAGS) $(OBJ) -o $(NAME)
 
 %.o:	%.c Makefile minishell.h
 		$(CC) $(CFLAGS) -c $< -o $@
