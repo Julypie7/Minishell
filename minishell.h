@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/19 12:04:12 by martalop         ###   ########.fr       */
+/*   Updated: 2024/07/19 13:17:19 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef	struct s_info
 {
 	char	*rl;
 	int	ex_stat;
-	t_envp	envp;
+	t_envp	*envp;
 } t_info;
 
 // initial functions
