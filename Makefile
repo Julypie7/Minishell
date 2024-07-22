@@ -6,13 +6,13 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/07/22 14:29:59 by martalop         ###   ########.fr        #
+#    Updated: 2024/07/22 21:53:11 by martalop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env_list_utils.c
+SRC = main.c env_utils.c env_utils2.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -20,7 +20,7 @@ CC = cc
 
 RFLAG = -lreadline
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -fsanitize=address
 
 LIBFT_A = libft/libft.a
 
