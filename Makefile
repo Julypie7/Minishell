@@ -6,13 +6,13 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/07/18 23:34:17 by martalop         ###   ########.fr        #
+#    Updated: 2024/07/22 14:29:59 by martalop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c
+SRC = main.c env_list_utils.c
 
 OBJ = $(SRC:.c=.o)
 

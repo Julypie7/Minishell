@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/19 13:17:19 by martalop         ###   ########.fr       */
+/*   Updated: 2024/07/22 14:57:47 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,14 @@ typedef	struct s_info
 
 // initial functions
 void	start_reading(t_info *info);
-int		find_equal(char *str);
-void	env_to_list(t_info *info, char **env);
 void	init_struct(t_info *info, char **env);
 int		main(int argc, char **argv, char **env);
+
+//creating env copy
+void	print_env(t_envp **lst);
+void	add_node_to_env(t_envp **lst, t_envp *node);
+int		find_equal(char *str);
+void	env_to_list(t_info *info, char **env);
+// TO DO -> int	find_arr_len();
 
 #endif
