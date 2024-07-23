@@ -6,7 +6,7 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/23 13:00:48 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:57:52 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	ign_spaces(char *line, int i)
 	return (j);
 }
 
-int lexer(t_info *info, t_lex_lst *tokens)
+int lexer(t_info *info)
 {
 	int i;
 	
@@ -38,5 +38,14 @@ int lexer(t_info *info, t_lex_lst *tokens)
 	while (info->rl[i])
 	{
 		i += ign_spaces(info->rl, i);
-		if (token_exist(info->rl[i], tokens))
-			j = check_token(info->rl, i, tokens)
+		if (token_exist(info->rl[i]))
+			j = check_token(info->rl, i, &info->tokens);
+		else
+			j = word(info->rl, i, &info->tokens);
+	}
+	if (j < 0)
+		return (0);
+	i += j;
+	return (1);
+}
+

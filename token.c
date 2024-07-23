@@ -6,24 +6,16 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 10:33:28 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/23 13:00:44 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:55:41 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishel.h"
 #include "lexer.h"
 
-int	token_exist(char token, t_lex_lst *tokens)
+int	token_exist(char token)
 {
-	if (token == '|')
-	{
-		if (!add_node(NULL, PIPE, tokens));
-			return (exit_free("err w pipe node", 1));
-		return (1);
-	}
-	if (token == '>')
-		return (1);
-	if (token == '<')
+	if (token == '|' || token == '>' || token == '<')
 		return (1);
 }
 
@@ -43,7 +35,7 @@ int	second_check(char *line, int i, t_lex_lst *tokens)
 	}
 }
 
-int	check_token(char *line, int i, t_lex_lst *tokens)
+int	check_token(char *line, int i, t_lex_lst **tokens)
 {
 	if (line[i] == '>')
 	{
@@ -62,7 +54,13 @@ int	check_token(char *line, int i, t_lex_lst *tokens)
 		return(1);
 	}
 	else if (line[i] == '|')
+	{
+		if (i == 0)
+			return (exit_free("syntax er<<<ror", 1));
+		if (!add_node(NULL, PIPE, tokens));
+			return (exit_free("err w pipe node", 1));
 		return (1);
+	}
 }
 
 
