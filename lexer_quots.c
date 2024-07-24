@@ -6,15 +6,11 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 13:31:23 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/19 14:41:42 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:01:28 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-# include "readline/readline.h"
-# include "readline/history.h"
+#include "minishell.h"
 
 static size_t	ft_strlen(char *s)
 {
@@ -27,46 +23,46 @@ static size_t	ft_strlen(char *s)
 }
 
 
-void	exit_free(char *str, int i)
+void	exit_free(char *str, int i, t_info *info)
 {
 	write(1, str, ft_strlen(str));
 	if (i == 1)
 	{
-		exit(1);
-		//free(env);
+		/*exit(1);*/
+		free_envlst(info->envp);
 	}
 }
 
-void valid_line(char *line)
+void valid_line(t_info *info)
 {
 	int i;
 
 	i = 0;
-	while (line[i])
+	while (info->rl[i])
 	{
-		if (line[i] == '"')
+		if (info->rl[i] == '"')
 		{
 			i++;
-			while(line[i] != '"' && line[i] != '\0')
+			while(info->rl[i] != '"' && info->rl[i] != '\0')
 				i++;
-			if(line[i] == '\0')
-				return(exit_free("Doble quotes are not closed\n", 1));
+			if(info->rl[i] == '\0')
+				return(exit_free("Doble quotes are not closed\n", 1, info));
 		}
-		if (line[i] == 39)
+		if (info->rl[i] == 39)
 		{
 			i++;
-			while (line[i] != 39 && line[i] != '\0')
+			while (info->rl[i] != 39 && info->rl[i] != '\0')
 				i++;
-			if(line[i] == '\0')
-				return(exit_free("Single quotes aren't closed\n", 1));
+			if(info->rl[i] == '\0')
+				return(exit_free("Single quotes aren't closed\n", 1, info));
 		}
-		if(line[i])
+		if(info->rl[i])
 			i++;
-		if (line[i] =='\0')
+		if (info->rl[i] =='\0')
 			return ;
 	}
 }
-
+/*
 int main()
 {
 	char *str;
@@ -79,6 +75,6 @@ int main()
 	}
 	rl_clear_history();
 	return (0);
-}
+}*/
 
 

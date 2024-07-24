@@ -6,12 +6,13 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/23 16:54:18 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:15:28 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
+#include "lexer.h"
 
 void	init_struct(t_info *info, char **env)
 {
@@ -36,7 +37,8 @@ void	start_reading(t_info *info)
 	while (i < 5)
 	{
 		info->rl = readline("our minishell > ");
-		printf("user input: %s\n", info->rl);
+		/*printf("user input: %s\n", info->rl);*/
+		valid_line(info);
 		//clasificar string
 		free(info->rl);
 		i++;
