@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:57:42 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:23:38 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef	enum s_type
 	INPUT,
 	HEREDOC,
 } t_type;
+
 
 typedef struct s_lex_lst
 {

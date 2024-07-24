@@ -6,13 +6,13 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/07/24 13:16:40 by ineimatu         ###   ########.fr        #
+#    Updated: 2024/07/24 13:26:45 by ineimatu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env_utils.c env_utils2.c lexer_quots.c
+SRC = main.c env_utils.c env_utils2.c lexer_quots.c lexer.c token.c
 
 OBJ = $(SRC:.c=.o)
 
