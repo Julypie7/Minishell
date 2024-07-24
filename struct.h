@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:12:39 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:57:42 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,20 @@ typedef struct s_envp
 	struct s_envp 	*next;
 } t_envp;
 
-typedef	enum s_token
+typedef	enum s_type
 {
 	PIPE = 1,
 	OUTPUT,
 	APPEND,
 	INPUT,
 	HEREDOC,
-} t_token;
+} t_type;
 
 typedef struct s_lex_lst
 {
-	char	*str;
-	t_token	token;
+	char	*word;
+	t_type	type;
+	char	*t_content;
 	int		elem;
 	struct s_lex_lst	*next;
 }	t_lex_lst;
@@ -42,7 +43,7 @@ typedef struct s_lex_lst
 typedef	struct s_info
 {
 	char	*rl;
-	t_lex_lst	*tokens;
+	t_lex_lst	**tokens;
 	int	ex_stat;
 	t_envp	*envp;
 } t_info;

@@ -6,7 +6,7 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/23 16:57:52 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:53:28 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ int lexer(t_info *info)
 	{
 		i += ign_spaces(info->rl, i);
 		if (token_exist(info->rl[i]))
-			j = check_token(info->rl, i, &info->tokens);
+			j = check_token(info, i);
 		else
-			j = word(info->rl, i, &info->tokens);
+			j = word(info, i);
+		if (j < 0)
+			return (0);
+		i += j;
 	}
-	if (j < 0)
-		return (0);
-	i += j;
 	return (1);
 }
 
