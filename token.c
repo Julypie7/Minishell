@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 10:33:28 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:53:24 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:14:36 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ int	second_check(t_info *info, int i)
 {
 	if (info->rl[i] == '>' && info->rl[i + 1] == '>')
 	{
-		if(!add_node(NULL, ">>", info->tokens))
+		if(!add_node(NULL, ">>", 0, info->tokens))
 			return(exit_free("err w append node", 2, info));
 		return (2);
 	}
 	if (info->rl[i] == '<' && info->rl[i + 1] == '<')
 	{
-		if(!add_node(NULL, "<<", info->tokens))
+		if(!add_node(NULL, "<<", 0, info->tokens))
 			return(exit_free("err w heredoc node", 2, info));
 		return (2);
 	}
@@ -41,7 +41,7 @@ int	check_token(t_info *info, int i)
 	{
 		if (info->rl[i + 1] == '>')
 			return (second_check(info, &i));
-		else (!add_node(NULL, ">", info->tokens))
+		else (!add_node(NULL, ">", 0, info->tokens))
 			return(exit_free("err w out node", 2, info));
 		return (1);
 	}
@@ -49,7 +49,7 @@ int	check_token(t_info *info, int i)
 	{
 		if (info->rl[i + 1] == '<')
 			return (second_check(info, &i));
-		else (!add_node(NULL, "<", info->tokens));
+		else (!add_node(NULL, "<", 0, info->tokens));
 			return(exit_free("err w inp node", 2, info));
 		return(1);
 	}
@@ -57,7 +57,7 @@ int	check_token(t_info *info, int i)
 	{
 		if (i == 0)
 			return (exit_free("syntax er<<<ror", 1));
-		if (!add_node(NULL, "|", info->tokens));
+		if (!add_node(NULL, "|", 0, info->tokens));
 			return (exit_free("err w pipe node", 2, info));
 		return (1);
 	}

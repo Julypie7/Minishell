@@ -6,7 +6,7 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:53:28 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:08:23 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,23 @@ int	ign_spaces(char *line, int i)
 	j = 0;
 	while (avoid(line[i + j]))
 		j++;
+	return (j);
+}
+
+int word(t_info *info, int i)
+{
+	int j;
+
+	j = 0;
+	while (info->rl[i + j] && info->rl[j + i] != ' ')
+	{
+		if (info->rl[i + j] == 39)
+			j = handle_quotes(info, i);
+		else if (info->rl[i + j] == 34)
+			j = handle_quotes(info, i);
+		else
+			j = handle_word(info, i);
+	}
 	return (j);
 }
 

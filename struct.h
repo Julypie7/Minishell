@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 15:23:38 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:13:47 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef	enum s_type
 typedef struct s_lex_lst
 {
 	char	*word;
+	int		quotes;
 	t_type	type;
 	char	*t_content;
 	int		elem;

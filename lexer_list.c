@@ -6,13 +6,13 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 14:32:50 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 15:40:29 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:15:03 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_lex_list	new_node(char *str, char *token, t_info *info)
+t_lex_list	new_node(char *str, char *token, int q, t_info *info)
 {
 	t_lex_list *new_node;
 	static int	i = 0;
@@ -21,6 +21,7 @@ t_lex_list	new_node(char *str, char *token, t_info *info)
 	if (!new_node)
 		exit_free("malloc err of new node lexer\n", 2, info);
 	new_node->word = str;
+	new_node->quotes = q;
 	if (token == ">")
 		new_node->type = OUTPUT;
 	if (token == ">>")
