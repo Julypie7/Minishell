@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:15:28 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:35:01 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	start_reading(t_info *info)
 		info->rl = readline("our minishell > ");
 		/*printf("user input: %s\n", info->rl);*/
 		valid_line(info);
+		if (!lexer(info))
+			exit (1);
 		//clasificar string
 		free(info->rl);
 		i++;

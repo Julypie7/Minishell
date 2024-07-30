@@ -6,12 +6,14 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 13:31:23 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:01:28 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:28:45 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+#include "lexer.h"
+#include "libft/libft.h"
+/*
 static size_t	ft_strlen(char *s)
 {
 	size_t	e;
@@ -21,15 +23,20 @@ static size_t	ft_strlen(char *s)
 		e++;
 	return (e);
 }
-
+*/
 
 void	exit_free(char *str, int i, t_info *info)
 {
 	write(1, str, ft_strlen(str));
 	if (i == 1)
 	{
-		/*exit(1);*/
 		free_envlst(info->envp);
+	}
+	if (i == 2)
+	{
+		free_envlst(info->envp);
+		if (info->tokens != NULL)
+			free_lexlst(info->tokens);
 	}
 }
 

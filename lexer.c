@@ -6,11 +6,11 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/25 17:08:23 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:29:49 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishel.h"
+#include "minishell.h"
 #include "lexer.h"
 
 int	avoid(char c)
@@ -50,8 +50,10 @@ int word(t_info *info, int i)
 int lexer(t_info *info)
 {
 	int i;
+	int j;
 	
 	i = 0;
+	j = 0;
 	while (info->rl[i])
 	{
 		i += ign_spaces(info->rl, i);
@@ -65,4 +67,3 @@ int lexer(t_info *info)
 	}
 	return (1);
 }
-

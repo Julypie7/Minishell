@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 14:22:37 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/25 17:25:40 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:58:38 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,39 +26,39 @@ int	handle_quotes(t_info *info, int i)
 	count = i - j;
 	tmp = (char *)malloc(sizeof(char) * count);
 	if (!tmp)
-		return (0);
+		return (-1);
 	i = ++j;
 	j = 0;
-	while (j <= count)
+	while (j < count)
 	{
 		tmp[j] = info->rl[i + j];
 		j++;
 	}
 	tmp[j] = '\0';
-	add_node(tmp, NULL, 1, info->tokens);
-	return (j - 1);
+	if (!add_node(tmp, NULL, 1, info))
+		return (-1);
+	return (j);
 }
 
-int	word(t_info *info, int i)
+int	handle_word(t_info *info, int i)
 {
 	char *tmp;
 	int	j;
 
 	j = 0;
-	while (info->rl[i + j] != " ")
+	while (info->rl[i + j] != ' ' || info->rl[i + j] != '\0')
 	   j++;
 	tmp = (char *)malloc(sizeof(char) * j);
 	if (!tmp)
-		return (0);
+		return (-1);
 	j = 0;
-	while (info->rl[i + j] != " ")
+	while (info->rl[i + j] != ' ')
 	{
 		tmp[j] = info->rl[i + j];
 		j++;
 	}
 	tmp[j] = '\0';
-	add_node(tmp, NULL, 0, info->tokens);
+	if (!add_node(tmp, NULL, 0, info))
+		return (-1);
 	return (j - 1);
 }
-
-

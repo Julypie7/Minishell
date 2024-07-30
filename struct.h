@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/25 17:13:47 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:27:52 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_lex_lst
 typedef	struct s_info
 {
 	char	*rl;
-	t_lex_lst	**tokens;
+	t_lex_lst	*tokens;
 	int	ex_stat;
 	t_envp	*envp;
 } t_info;
