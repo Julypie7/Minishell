@@ -6,12 +6,13 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/30 14:29:49 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/02 13:06:18 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "lexer.h"
+#include "libft/libft.h"
 
 int	avoid(char c)
 {
@@ -37,13 +38,15 @@ int word(t_info *info, int i)
 	j = 0;
 	while (info->rl[i + j] && info->rl[j + i] != ' ')
 	{
-		if (info->rl[i + j] == 39)
-			j = handle_quotes(info, i);
-		else if (info->rl[i + j] == 34)
-			j = handle_quotes(info, i);
+		while (info->rl[i + j] == 39 || info->rl[i + j] == 34)
+			j++;
+		if (avoid(info->rl[i + j]))
+			break;
 		else
-			j = handle_word(info, i);
+			j++;
 	}
+	if (!add_node(ft_substr(info->rl, i, j), NULL, info))
+		return (-1);
 	return (j);
 }
 

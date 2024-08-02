@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 13:31:23 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/30 14:28:45 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/01 12:44:17 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	exit_free(char *str, int i, t_info *info)
 	}
 }
 
-void valid_line(t_info *info)
+int valid_line(t_info *info)
 {
 	int i;
 
@@ -53,7 +53,10 @@ void valid_line(t_info *info)
 			while(info->rl[i] != '"' && info->rl[i] != '\0')
 				i++;
 			if(info->rl[i] == '\0')
-				return(exit_free("Doble quotes are not closed\n", 1, info));
+				{
+					exit_free("Doble quotes are not closed\n", 1, info);
+					return(0);
+				}
 		}
 		if (info->rl[i] == 39)
 		{
@@ -61,13 +64,17 @@ void valid_line(t_info *info)
 			while (info->rl[i] != 39 && info->rl[i] != '\0')
 				i++;
 			if(info->rl[i] == '\0')
-				return(exit_free("Single quotes aren't closed\n", 1, info));
+			{
+				exit_free("Single quotes aren't closed\n", 1, info);
+				return(0);
+			}
 		}
 		if(info->rl[i])
 			i++;
 		if (info->rl[i] =='\0')
-			return ;
+			return (1);
 	}
+	return (1);
 }
 /*
 int main()
