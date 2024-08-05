@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/01 22:25:57 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/04 14:29:44 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	open_redir(char **argv)
 {
 	int	fd;
 
-	print_char_arr(argv);
+//	print_char_arr(argv);
 	fd = open(argv[2], O_RDONLY);
 	if (fd == -1)
 		perror("cannot open redirection");
@@ -87,6 +87,8 @@ int	execute(t_cmd_info *cmd, t_info *info)
 }
 
 // si execve tiene el path de 'cat' pero un char ** de 'ls' como argumento, por qué no falla??
+// -> parece ser que sustituye el primer argumento del array con el path que le mandemos
+// -> por tanto si el path es correcto, da igual cual sea el argumento, que lo ejecutará bien
 
 int	main(int argc, char **argv, char **env)
 {
