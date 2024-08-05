@@ -6,13 +6,12 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/01 12:39:22 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/22 21:46:31 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
-#include "lexer.h"
 
 void	init_struct(t_info *info, char **env)
 {
@@ -21,7 +20,6 @@ void	init_struct(t_info *info, char **env)
 	info->rl = NULL;
 	info->ex_stat = 0;
 	info->envp = NULL;
-	info->tokens = NULL;
 	env_to_list(info, env);
 //	print_env(info->envp);
 	arr = envlst_to_arr(info->envp);
@@ -37,16 +35,12 @@ void	start_reading(t_info *info)
 	while (i < 5)
 	{
 		info->rl = readline("our minishell > ");
-		/*printf("user input: %s\n", info->rl);*/
-		if(!valid_line(info))
-			break;
-		if (!lexer(info))
-			exit (1);
+		printf("user input: %s\n", info->rl);
 		//clasificar string
 		free(info->rl);
 		i++;
 	}
-	//rl_clear_history();
+	rl_clear_history();
 
 }
 
@@ -62,6 +56,6 @@ int	main(int argc, char **argv, char **env)
 	}
 	init_struct(&info, env);
 	start_reading(&info);
-	//free_envlst(info.envp);
+	free_envlst(info.envp);
 	return (info.ex_stat);
 }

@@ -6,13 +6,13 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/08/02 13:09:32 by ineimatu         ###   ########.fr        #
+#    Updated: 2024/07/22 21:53:11 by martalop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c env_utils.c env_utils2.c lexer_quots.c lexer.c token.c lexer_list.c
+SRC = main.c env_utils.c env_utils2.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -32,7 +32,7 @@ makelibft:
 $(NAME): $(LIBFT_A) $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L./libft -lft $(RFLAG)
 
-%.o:%.c Makefile minishell.h lexer.h struct.h
+%.o:%.c Makefile minishell.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
