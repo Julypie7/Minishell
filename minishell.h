@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/22 21:39:30 by martalop         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:17:21 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,11 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <unistd.h>
 # include "readline/readline.h"
 # include "readline/history.h"
-
-typedef struct s_envp
-{
-	char 	*key;
-	char	*value;
-	struct s_envp 	*next;
-} t_envp;
-
-typedef	struct s_info
-{
-	char	*rl;
-	int	ex_stat;
-	t_envp	*envp;
-} t_info;
+#include "lexer.h"
+#include "struct.h"
 
 // initial functions
 void	start_reading(t_info *info);
