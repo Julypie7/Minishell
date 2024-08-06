@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/04 17:56:17 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:28:21 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,13 @@ typedef	enum s_type
 	HEREDOC,
 } t_type;
 
+typedef struct s_redir
+{
+	t_type	token;
+	char	*file_name;
+	int		fd;
+	s_redir		*next;
+} 	t_redir;
 
 typedef struct s_lex_lst
 {
