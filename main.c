@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/01 12:39:22 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:19:59 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,6 @@ int	main(int argc, char **argv, char **env)
 	}
 	init_struct(&info, env);
 	start_reading(&info);
-	//free_envlst(info.envp);
+//	free_envlst(info.envp);
 	return (info.ex_stat);
 }
