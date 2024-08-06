@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/04 14:29:44 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/06 20:33:34 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,32 +19,56 @@
 #include <sys/wait.h>
 
 // ejemplo de un COMANDO SUELTO con REDIRECCIONES (hardcoded, sin buscar path y haciendo el char ** malamente)
-// -> fork necesario
+// -> fork necesario prq hacemos execve para ejecutar el comando
 // -> redireccion (dup2) en el padre
 
-// ------     ./a.out      "<"        infile     cat     ------
-// ------     argv[0]   argv[1]     argv[2]    argv[3]  ------
+// ------     ./a.out      ">"       infile     ">"      outfile        cat     ------
+// ------     argv[0]   argv[1]     argv[2]   argv[3]    argv[4]      argv[5]   ------
 
-int	open_redir(char **argv)
+int	*open_redir(char **argv)
 {
-	int	fd;
+	int	*fd;
+	int		i;
+	int		x;
 
+	i = 0;
+	x = 2;
+	fd = malloc(sizeof(int) * 2); // en vez de 2 el num de redirs
+	if (!fd)
+		return (NULL);
+	fd[0] = -2;
 //	print_char_arr(argv);
-	fd = open(argv[2], O_RDONLY);
-	if (fd == -1)
-		perror("cannot open redirection");
-//	printf("%d\n", fd);
+	while (i < 2)
+	{
+//		fd[i] = open(argv[x], O_RDONLY); para los redirs de lectura (0)
+		fd[i] = open(argv[x], O_WRONLY | O_CREAT, 0644); // para los de escritura (1)
+		if (fd[i] == -1)
+		{
+			perror("open for redir failed");
+			exit(1);
+		}
+		//printf("%d\n", fd);
+		i++;
+		x = x + 2;
+	}
 	return (fd);
 }
 
-int	redirect(int fd)
+int	redirect(int *fd)
 {
-	if (dup2(fd, 0) == -1)
+	int	i;
+
+	i = 0;
+	while (fd[i])
 	{
-		write(2, "dup2 failed\n", 12);
-		return (1);
+		if (dup2(fd[i], 1) == -1)
+		{
+			write(2, "dup2 failed\n", 12);
+			return (1);
+		}
+	//	close(fd[i]);
+		i++;
 	}
-	close(fd);
 	return (0);
 }
 
@@ -60,7 +84,7 @@ t_cmd_info	*set_cmd(char **argv, char **env, t_info *info)
 	arr_cmd = malloc(sizeof(char *) * 2);
 	if (!arr_cmd)
 		return (NULL);
-	arr_cmd[0] = argv[3];
+	arr_cmd[0] = argv[5];
 	arr_cmd[1] = NULL;
 	cmd->arr_cmd = arr_cmd;
 	cmd->path = "/usr/bin/cat";
@@ -87,28 +111,29 @@ int	execute(t_cmd_info *cmd, t_info *info)
 }
 
 // si execve tiene el path de 'cat' pero un char ** de 'ls' como argumento, por qué no falla??
-// -> parece ser que sustituye el primer argumento del array con el path que le mandemos
-// -> por tanto si el path es correcto, da igual cual sea el argumento, que lo ejecutará bien
+	// -> parece ser que sustituye el primer argumento del array con el path que le mandemos
+	// -> por tanto si el path es correcto, da igual cual sea el argumento, que lo ejecutará bien
 
 int	main(int argc, char **argv, char **env)
 {
 	t_info	info;
-	int		fd;
+	int		*fd;
 	char	**new_env;
 	t_cmd_info	*cmd;
 
 	info.ex_stat = 0;
-	fd = open_redir(argv);
-	if (fd == -1)
+	fd = open_redir(argv); // OPENS
+	if (!fd)
 		return (1);
 
-	if (redirect(fd) == 1)
+	if (redirect(fd) == 1) // DUP2
 		return (1);
+//	close(fd[0]); si hago este close, no me borra el contenido del primer infile
 
 //	new_env = envlst_to_arr() -> tendre que hacer esto prq en la struct info me llega como lista
 	cmd = set_cmd(argv, env, &info);
-	execute(cmd, &info);
+	execute(cmd, &info); // FORK & EXECVE
 	waitpid(cmd->pid, &(info.ex_stat), 0);
-	close(fd);
+	close(fd[1]);
 	return (WEXITSTATUS(info.ex_stat));
 }
