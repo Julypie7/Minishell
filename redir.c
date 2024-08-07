@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/06 20:33:34 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/07 21:44:49 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 // -> fork necesario prq hacemos execve para ejecutar el comando
 // -> redireccion (dup2) en el padre
 
-// ------     ./a.out      ">"       infile     ">"      outfile        cat     ------
+// ------     ./a.out      "<"       infile     "<"      outfile        cat     ------
 // ------     argv[0]   argv[1]     argv[2]   argv[3]    argv[4]      argv[5]   ------
 
 int	*open_redir(char **argv)
@@ -40,8 +40,8 @@ int	*open_redir(char **argv)
 //	print_char_arr(argv);
 	while (i < 2)
 	{
-//		fd[i] = open(argv[x], O_RDONLY); para los redirs de lectura (0)
-		fd[i] = open(argv[x], O_WRONLY | O_CREAT, 0644); // para los de escritura (1)
+	//	fd[i] = open(argv[x], O_RDONLY); // para los redirs de lectura (0)
+		fd[i] = open(argv[x], O_WRONLY | O_CREAT | O_TRUNC, 0644); // para los de escritura (1)
 		if (fd[i] == -1)
 		{
 			perror("open for redir failed");
@@ -66,19 +66,19 @@ int	redirect(int *fd)
 			write(2, "dup2 failed\n", 12);
 			return (1);
 		}
-	//	close(fd[i]);
+		close(fd[i]); // lo puedo dejar ???? yo creo que si
 		i++;
 	}
 	return (0);
 }
 
-t_cmd_info	*set_cmd(char **argv, char **env, t_info *info)
+t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 {
-	t_cmd_info	*cmd;
+	t_cmd	*cmd;
 	char	**arr_cmd;
 	char	*path;
 	
-	cmd = malloc(sizeof(t_cmd_info) * 1);
+	cmd = malloc(sizeof(t_cmd) * 1);
 	if (!cmd)
 		return (NULL);
 	arr_cmd = malloc(sizeof(char *) * 2);
@@ -93,7 +93,7 @@ t_cmd_info	*set_cmd(char **argv, char **env, t_info *info)
 	return (cmd);
 }
 
-int	execute(t_cmd_info *cmd, t_info *info)
+int	execute(t_cmd *cmd, t_info *info)
 {
 	cmd->pid = fork();
 	if (cmd->pid == -1)
@@ -119,7 +119,7 @@ int	main(int argc, char **argv, char **env)
 	t_info	info;
 	int		*fd;
 	char	**new_env;
-	t_cmd_info	*cmd;
+	t_cmd	*cmd;
 
 	info.ex_stat = 0;
 	fd = open_redir(argv); // OPENS
@@ -128,12 +128,10 @@ int	main(int argc, char **argv, char **env)
 
 	if (redirect(fd) == 1) // DUP2
 		return (1);
-//	close(fd[0]); si hago este close, no me borra el contenido del primer infile
 
 //	new_env = envlst_to_arr() -> tendre que hacer esto prq en la struct info me llega como lista
 	cmd = set_cmd(argv, env, &info);
 	execute(cmd, &info); // FORK & EXECVE
 	waitpid(cmd->pid, &(info.ex_stat), 0);
-	close(fd[1]);
 	return (WEXITSTATUS(info.ex_stat));
 }

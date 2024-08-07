@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/06 20:18:21 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/07 21:42:53 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,6 @@
 # define EXECUTION_H
 
 # include "minishell.h"
-
-typedef struct s_cmd
-{
-	char	**arr_cmd;
- 	char	*path;
- 	char	**env;
- 	int		redir[4];
-	int		pid;
-//	expansion ?
-	struct s_cmd	*next;
-}	t_cmd_info;
 
 typedef	enum s_type
 {
@@ -41,6 +30,24 @@ typedef struct s_redir
 	int		fd;
 	struct s_redir		*next;
 } 	t_redir;
+
+typedef struct s_cmd
+{
+	char	**arr_cmd;
+ 	char	*path;
+ 	char	**env;
+	int		pid;
+	t_redir	*in_redirs;
+	t_redir	*out_redirs;
+	int		indx; // cuál comando es
+	struct s_cmd	*next;
+}	t_cmd;
+
+typedef struct s_exec_info
+{
+	int		or_fd[2]; // maybe solo necesito esto si tengo más de un comando?
+	int		cmd_num; // saberlo con funcion que me cuente cuantas '|' hay
+}	t_exec_info;
 
 typedef struct s_lex_lst
 {
