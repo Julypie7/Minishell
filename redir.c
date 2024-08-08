@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/07 21:44:49 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/08 16:53:56 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,18 @@ int	*open_redir(char **argv)
 	fd = malloc(sizeof(int) * 2); // en vez de 2 el num de redirs
 	if (!fd)
 		return (NULL);
-	fd[0] = -2;
+//	fd[0] = -2;
 //	print_char_arr(argv);
 	while (i < 2)
 	{
-	//	fd[i] = open(argv[x], O_RDONLY); // para los redirs de lectura (0)
-		fd[i] = open(argv[x], O_WRONLY | O_CREAT | O_TRUNC, 0644); // para los de escritura (1)
+		fd[i] = open(argv[x], O_RDONLY); // para los redirs de lectura (0)
+	//	fd[i] = open(argv[x], O_WRONLY | O_CREAT | O_TRUNC, 0644); // para los de escritura (1)
 		if (fd[i] == -1)
 		{
-			perror("open for redir failed");
-			exit(1);
+			write(2, argv[x], ft_strlen(argv[x]));
+			write(2, ": ", 2);
+			perror("");
+			return (NULL);
 		}
 		//printf("%d\n", fd);
 		i++;
@@ -58,17 +60,26 @@ int	redirect(int *fd)
 {
 	int	i;
 
-	i = 0;
-	while (fd[i])
+	i = 1;
+//	i = num de redirs - 1;
+//	if (redir_type == input | redir_type == heredoc)
+//	{
+		if (dup2(fd[i], 0) == -1)
+		{
+			write(2, "dup2 failed\n", 12);
+			return (1);
+		}
+		close(fd[i]);
+//	}
+/*	if (redir_type == output)
 	{
 		if (dup2(fd[i], 1) == -1)
 		{
 			write(2, "dup2 failed\n", 12);
 			return (1);
 		}
-		close(fd[i]); // lo puedo dejar ???? yo creo que si
-		i++;
-	}
+		close(fd[i]);
+	}*/
 	return (0);
 }
 
@@ -85,7 +96,9 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	if (!arr_cmd)
 		return (NULL);
 	arr_cmd[0] = argv[5];
-	arr_cmd[1] = NULL;
+//	arr_cmd[1] = "infile";
+//	arr_cmd[2] = "holabola";
+	arr_cmd[2] = NULL;
 	cmd->arr_cmd = arr_cmd;
 	cmd->path = "/usr/bin/cat";
 	cmd->env = env;
@@ -114,6 +127,18 @@ int	execute(t_cmd *cmd, t_info *info)
 	// -> parece ser que sustituye el primer argumento del array con el path que le mandemos
 	// -> por tanto si el path es correcto, da igual cual sea el argumento, que lo ejecutará bien
 
+void	remove_fds(int	*fd)
+{
+	int	i;
+
+	i = 0;
+	while (i < 2 - 1) // num de redirecciones menos 1 para que no pille la última
+	{
+		close(fd[i]);
+		i++;
+	}
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_info	info;
@@ -125,6 +150,8 @@ int	main(int argc, char **argv, char **env)
 	fd = open_redir(argv); // OPENS
 	if (!fd)
 		return (1);
+	
+	remove_fds(fd); // CLOSE de los fds de redirs no necesarios 
 
 	if (redirect(fd) == 1) // DUP2
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/07 21:42:53 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/08 21:52:01 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ typedef struct s_cmd
  	char	*path;
  	char	**env;
 	int		pid;
-	t_redir	*in_redirs;
-	t_redir	*out_redirs;
+	t_redir	*redirs;
 	int		indx; // cuál comando es
 	struct s_cmd	*next;
 }	t_cmd;
