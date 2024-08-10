@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/08 21:52:01 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/10 21:38:29 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define EXECUTION_H
 
 # include "minishell.h"
+
+# define E_WACAMOLE "Hola como estamos\n"
 
 typedef	enum s_type
 {
@@ -27,7 +29,7 @@ typedef struct s_redir
 {
 	t_type	token;
 	char	*file_name;
-	int		fd;
+	//int		fd;
 	struct s_redir		*next;
 } 	t_redir;
 
@@ -37,6 +39,8 @@ typedef struct s_cmd
  	char	*path;
  	char	**env;
 	int		pid;
+	int		fd_in;
+	int		fd_out;
 	t_redir	*redirs;
 	int		indx; // cuál comando es
 	struct s_cmd	*next;

@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/10 20:05:19 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/10 22:04:20 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,32 +22,32 @@
 // -> fork necesario prq hacemos execve para ejecutar el comando
 // -> redireccion (dup2) en el padre
 
-// -----   ./a.out      "<"       infile     "<"      outfile       cat       ">"      out      ">"      out2    ------
+// -----   ./a.out      "<"       infile     "<<"        lim        cat       ">"      out      ">"      out2    ------
 // -----   argv[0]   argv[1]     argv[2]   argv[3]    argv[4]     argv[5]   argv[6]  argv[7]  argv[8]   argv[9]  ------
 
 int	open_redir(t_redir *redirs)
 {
 	while (redirs)
 	{
-		if (redirs && (redirs->token == INPUT || redirs->token == HEREDOC))
+		if (redirs && (redirs->token == INPUT))
 		{
 			redirs->fd = open(redirs->file_name, O_RDONLY);
 			if (redirs->fd == -1)
 			{
-				write(2, redirs->file_name, ft_strlen(redirs->file_name));
-				write(2, ": ", 2);
-				perror("");
+				perror(redirs->file_name);
 				return (1);
 			}
 		}
+	/*	else if (redirs->token == HEREDOC)
+		{
+
+		}*/
 		else if (redirs->token == OUTPUT)
 		{
 			redirs->fd = open(redirs->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (redirs->fd == -1)
 			{
-				write(2, redirs->file_name, ft_strlen(redirs->file_name));
-				write(2, ": ", 2);
-				perror("");
+				perror(redirs->file_name);
 				return (1);
 			}
 		}
@@ -116,7 +116,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
 		return (NULL);
-	tmp->token = INPUT;
+	tmp->token = HEREDOC;
 	tmp->file_name = argv[4];
 	tmp->fd = -1;
 	tmp->next = NULL;
@@ -228,6 +228,8 @@ int	main(int argc, char **argv, char **env)
 
 	info.ex_stat = 0;
 	cmd = set_cmd(argv, env, &info);
+	if (!cmd)
+		return (1);
 //	print_redirs_lst(cmd->redirs);
 	if (execute(cmd, &info) == 1) // FORK & EXECVE
 		return (1);

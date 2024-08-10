@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 13:32:05 by martalop          #+#    #+#             */
-/*   Updated: 2024/07/30 15:00:37 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/10 22:04:56 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// --------- ./a.out      <<         limit   -----------
+// --------- ./a.out      "<<"         limit   -----------
 // --------- argv[0]    argv[1]     argv[2]  -----------
+
+// PROBAR CON REDIRECCION DE SALIDA
+// PROOBAR CON PIPE TMB
 
 int	main(int argc, char **argv)
 {
@@ -31,25 +34,31 @@ int	main(int argc, char **argv)
 	i = 0;
 	str = NULL;
 	file_name = "tmp_file";
-	while (str)
+
+	// creo archivo
+	fd = open(file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644); 
+	// es trunc prq no me deberia hacer append cuando el archivo ya esta creado y vuelvo a hacer un heredoc
+	if (fd == -1)
+		return (1);
+
+	while (1)
 	{
-		str = readline("> ");
-		fd = open(file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd == -1)
-			return (1);
-	//	printf("%d\n", fd);
-		if (ft_strnstr(str, argv[2], ft_strlen(argv[2])))
+		// leo de terminal
+		str = readline("> ");		
+	
+		// si la linea leida de terminal es = a limiter, cierro el archivo y paro el bucle de lectura
+		if (!ft_strncmp(str, argv[2], ft_strlen(argv[2]) + 1))
 		{
 			free(str);
 			close(fd);
 			unlink(file_name);
 			break ;
 		}
+		// si la linea leida NO es = limiter, guardo la linea en el fd del archivo creado
 		write(fd, str, ft_strlen(str));
 		write(fd, "\n", 1);
-		close(fd);
+
 		free(str);
 		i++;
 	}
-
 }
