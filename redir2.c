@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/11 21:30:27 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/11 21:52:45 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,14 @@ int	open_redir(t_redir *redirs)
 				return (1);
 			}
 		}
-	/*	else if (redirs->token == HEREDOC)
+		else if (redirs->token == HEREDOC)
 		{
-			fd = heredoc(redirs->file_name); // heredoc devuelve el fd de lectura de la pipe del documento heredoc
+		//	write(2, "open con heredoc\n", 17); 
+			redirs->fd = heredoc(redirs->file_name); // heredoc devuelve el fd de lectura de la pipe del documento heredoc
 											 // file_name es el limiter
-			if (fd == -1)
+			if (redirs->fd == -1)
 				return (1);
-		}*/
+		}
 		else if (redirs->token == APPEND)
 		{
 		//	write(2, "open con append\n", 16);
@@ -112,7 +113,7 @@ int	redirect(t_redir *redirs)
 				return (1);
 			}
 		}
-		else if (redirs->token == OUTPUT)
+		else if (redirs->token == OUTPUT || redirs->token == APPEND)
 		{
 			if (dup2(redirs->fd, 1) == -1)
 			{
@@ -156,11 +157,10 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	cmd->redirs->fd = -1;
 	cmd->redirs->next = NULL;
 	
-	//cmd->redirs->next = tmp;
 	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
 		return (NULL);
-	tmp->token = INPUT;
+	tmp->token = HEREDOC;
 	tmp->file_name = argv[4];
 	tmp->fd = -1;
 	tmp->next = NULL;
@@ -170,7 +170,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	tmp2 = malloc(sizeof(t_redir) * 1);
 	if (!tmp2)
 		return (NULL);
-	tmp2->token = OUTPUT;
+	tmp2->token = APPEND;
 	tmp2->file_name = argv[7];
 	tmp2->fd = -1;
 	tmp2->next = NULL;
@@ -180,7 +180,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	tmp3 = malloc(sizeof(t_redir) * 1);
 	if (!tmp3)
 		return (NULL);
-	tmp3->token = APPEND;
+	tmp3->token = OUTPUT;
 	tmp3->file_name = argv[9];
 	tmp3->fd = -1;
 	tmp3->next = NULL;
