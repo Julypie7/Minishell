@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/10 22:04:20 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/11 21:30:27 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,45 @@
 // -> fork necesario prq hacemos execve para ejecutar el comando
 // -> redireccion (dup2) en el padre
 
-// -----   ./a.out      "<"       infile     "<<"        lim        cat       ">"      out      ">"      out2    ------
+// -----   ./a.out      "<"       infile     "<<"        lim        cat       ">"      out      ">>"      out    ------
 // -----   argv[0]   argv[1]     argv[2]   argv[3]    argv[4]     argv[5]   argv[6]  argv[7]  argv[8]   argv[9]  ------
+
+int	heredoc(char *lim)
+{
+	char	*str;
+	int		pipe_here[2];
+
+	str = NULL;
+	if (pipe(pipe_here) == -1)
+		return (write(2, "pipe failed\n", 12), -1);
+	while (1)
+	{
+		// leo de terminal
+		str = readline("> ");
+		// si la linea leida de terminal es = a limiter, cierro el fd de escritura y paro el bucle de lectura
+		if (!ft_strncmp(str, lim, ft_strlen(lim) + 1))
+		{
+			free(str);
+			close(pipe_here[1]);
+			break ;
+		}
+		// si la linea leida NO es = limiter, guardo la linea en el fd de escritura de la pipe
+		write(pipe_here[1], str, ft_strlen(str));
+		write(pipe_here[1], "\n", 1);
+		free(str);
+	}
+	return (pipe_here[0]);
+
+}
 
 int	open_redir(t_redir *redirs)
 {
 	while (redirs)
 	{
-		if (redirs && (redirs->token == INPUT))
+//		fprintf(stderr, "%d\n", redirs->token);
+		if (redirs->token == INPUT)
 		{
+		//	write(2, "open con input\n", 15); 
 			redirs->fd = open(redirs->file_name, O_RDONLY);
 			if (redirs->fd == -1)
 			{
@@ -40,10 +70,24 @@ int	open_redir(t_redir *redirs)
 		}
 	/*	else if (redirs->token == HEREDOC)
 		{
-
+			fd = heredoc(redirs->file_name); // heredoc devuelve el fd de lectura de la pipe del documento heredoc
+											 // file_name es el limiter
+			if (fd == -1)
+				return (1);
 		}*/
+		else if (redirs->token == APPEND)
+		{
+		//	write(2, "open con append\n", 16);
+			redirs->fd = open(redirs->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+			if (redirs->fd == -1)
+			{
+				perror(redirs->file_name);
+				return (1);
+			}
+		}
 		else if (redirs->token == OUTPUT)
 		{
+		//	write(2, "open con output\n", 16);
 			redirs->fd = open(redirs->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (redirs->fd == -1)
 			{
@@ -116,7 +160,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
 		return (NULL);
-	tmp->token = HEREDOC;
+	tmp->token = INPUT;
 	tmp->file_name = argv[4];
 	tmp->fd = -1;
 	tmp->next = NULL;
@@ -136,7 +180,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 	tmp3 = malloc(sizeof(t_redir) * 1);
 	if (!tmp3)
 		return (NULL);
-	tmp3->token = OUTPUT;
+	tmp3->token = APPEND;
 	tmp3->file_name = argv[9];
 	tmp3->fd = -1;
 	tmp3->next = NULL;
@@ -231,7 +275,7 @@ int	main(int argc, char **argv, char **env)
 	if (!cmd)
 		return (1);
 //	print_redirs_lst(cmd->redirs);
-	if (execute(cmd, &info) == 1) // FORK & EXECVE
+	if (execute(cmd, &info) == 1)
 		return (1);
 	waitpid(cmd->pid, &(info.ex_stat), 0);
 	return (WEXITSTATUS(info.ex_stat));
