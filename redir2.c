@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/11 21:52:45 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/13 18:51:49 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 // -> fork necesario prq hacemos execve para ejecutar el comando
 // -> redireccion (dup2) en el padre
 
-// -----   ./a.out      "<"       infile     "<<"        lim        cat       ">"      out      ">>"      out    ------
+// -----   ./a.out      "<"       infile     "<<"        lim        cat       ">>"      out      ">"      out2    ------
 // -----   argv[0]   argv[1]     argv[2]   argv[3]    argv[4]     argv[5]   argv[6]  argv[7]  argv[8]   argv[9]  ------
 
 int	heredoc(char *lim)
@@ -127,14 +127,38 @@ int	redirect(t_redir *redirs)
 	return (0);
 }
 
-t_cmd	*set_cmd(char **argv, char **env, t_info *info)
+int	count_cmds(char *rl)
+{
+	int	i;
+	int	pipes;
+
+	i = 0;
+	pipes = 0;
+	while (rl && rl[i])
+	{
+		if (rl[i] == '|')
+			pipes++;
+		i++;
+	}
+	if (pipes != 0)
+		pipes++;
+	return (pipes);
+}
+
+t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 {
 	t_cmd	*cmd;
-	char	*path;
 	t_redir	*tmp;
 	t_redir	*tmp2;
 	t_redir	*tmp3;
 	
+	exec_info->paths = prep_cmd_paths(env);
+	if (!exec_info->paths)
+		return (write(2, "problem splitting paths\n", 24), NULL);
+	exec_info->or_fd[0] = dup(0);
+	exec_info->or_fd[1] = dup(1);
+//	exec_info->cmd_num = count_cmds(info->rl);
+	exec_info->cmd_num = 1;
 	cmd = malloc(sizeof(t_cmd) * 1);
 	if (!cmd)
 		return (NULL);
@@ -143,7 +167,9 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info)
 		return (NULL);
 	cmd->arr_cmd[0] = argv[5];
 	cmd->arr_cmd[1] = NULL;
-	cmd->path = "/usr/bin/cat";
+	cmd->path = find_path(exec_info->paths, cmd->arr_cmd);
+	if (!cmd->path)
+		return (write(2, "problem finfing path\n", 21), NULL);
 	cmd->env = env;
 //	cmd->env = envlst_to_arr() -> tendre que hacer esto prq en la struct info me llega como lista
 	cmd->pid = 0;
@@ -268,10 +294,11 @@ void	print_redirs_lst(t_redir *redirs)
 int	main(int argc, char **argv, char **env)
 {
 	t_info	info;
+	t_exec	exec_info;
 	t_cmd	*cmd;
 
 	info.ex_stat = 0;
-	cmd = set_cmd(argv, env, &info);
+	cmd = set_cmd(argv, env, &info, &exec_info);
 	if (!cmd)
 		return (1);
 //	print_redirs_lst(cmd->redirs);

@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/11 18:36:37 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:32:57 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 typedef	enum s_type
 {
-	OUTPUT = 1,
+	PIPE = 1,
+	OUTPUT,
 	APPEND,
 	INPUT,
 	HEREDOC,
@@ -37,18 +38,20 @@ typedef struct s_cmd
  	char	*path;
  	char	**env;
 	int		pid;
-	int		fd_in;
-	int		fd_out;
+//	int		fd_in; // para las redirs de input
+//	int		fd_out; // para las redirs de output
+//(se van actualizando prq los voy sobreescribiendo)
 	t_redir	*redirs;
 	int		indx; // cuál comando es
 	struct s_cmd	*next;
 }	t_cmd;
 
-typedef struct s_exec_info
+typedef struct s_exec
 {
+	char	**paths;
 	int		or_fd[2]; // maybe solo necesito esto si tengo más de un comando?
 	int		cmd_num; // saberlo con funcion que me cuente cuantas '|' hay
-}	t_exec_info;
+}	t_exec;
 
 typedef struct s_lex_lst
 {
@@ -59,5 +62,12 @@ typedef struct s_lex_lst
 //	int	elem;
 	struct s_lex_lst	*next;
 }	t_lex_lst;
+
+// PIPEX UTILS
+char	**prep_cmd_paths(char **env);
+char	**join_for_path(char **paths);
+char	**create_empty_array(void);
+char	*find_path(char **paths, char **arr_cmd);
+char	*check_cmd_access(char **paths, char *cmd);
 
 #endif
