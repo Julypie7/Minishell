@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/13 16:32:57 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/14 20:10:37 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,19 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+/*typedef struct s_pipe
+{
+	int	pipe_end[2];
+	struct s_pipe	*next;
+}*/
+
 typedef struct s_exec
 {
 	char	**paths;
-	int		or_fd[2]; // maybe solo necesito esto si tengo más de un comando?
-	int		cmd_num; // saberlo con funcion que me cuente cuantas '|' hay
+	int		or_fd[2];
+	int		cmd_num;
+	int		pipe_end[2];
+	//	t_pipe	*pipes;
 }	t_exec;
 
 typedef struct s_lex_lst
@@ -69,5 +77,8 @@ char	**join_for_path(char **paths);
 char	**create_empty_array(void);
 char	*find_path(char **paths, char **arr_cmd);
 char	*check_cmd_access(char **paths, char *cmd);
+
+// EXECUTION
+int	heredoc(char *lim);
 
 #endif
