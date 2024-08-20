@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/14 20:10:37 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/20 14:39:28 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,12 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
-/*typedef struct s_pipe
-{
-	int	pipe_end[2];
-	struct s_pipe	*next;
-}*/
-
 typedef struct s_exec
 {
 	char	**paths;
 	int		or_fd[2];
 	int		cmd_num;
 	int		pipe_end[2];
-	//	t_pipe	*pipes;
 }	t_exec;
 
 typedef struct s_lex_lst
@@ -80,5 +73,9 @@ char	*check_cmd_access(char **paths, char *cmd);
 
 // EXECUTION
 int	heredoc(char *lim);
+
+// BUILTIN CHECK
+int	fill_arr_b(char **arr_b);
+int	find_cmd_type(char *str);
 
 #endif
