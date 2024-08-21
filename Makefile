@@ -6,13 +6,13 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/07/18 16:35:18 by martalop         ###   ########.fr        #
+#    Updated: 2024/07/22 21:53:11 by martalop         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
-SRC = main.c
+SRC = main.c env_utils.c env_utils2.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -20,21 +20,28 @@ CC = cc
 
 RFLAG = -lreadline
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -fsanitize=address
 
-all: $(NAME)
+LIBFT_A = libft/libft.a
 
-$(NAME): Makefile minishell.h $(OBJ)
-		$(CC) $(RFLAG) $(CFLAGS) $(OBJ) -o $(NAME)
+all: makelibft $(NAME)
 
-%.o:	%.c Makefile minishell.h
-		$(CC) $(CFLAGS) -c $< -o $@
+makelibft: 
+	make -C libft
+
+$(NAME): $(LIBFT_A) $(OBJ)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L./libft -lft $(RFLAG)
+
+%.o:%.c Makefile minishell.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 		rm -f $(OBJ)
+		make clean -C libft
 
 fclean: clean
 		rm -f $(NAME)
+		rm -f $(LIBFT_A)
 
 re: fclean all
 
