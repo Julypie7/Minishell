@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/22 21:39:30 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:15:03 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef	struct s_info
 } t_info;
 
 // initial functions
-void	start_reading(t_info *info);
+int		start_reading(t_info *info);
 void	init_struct(t_info *info, char **env);
 int		main(int argc, char **argv, char **env);
 

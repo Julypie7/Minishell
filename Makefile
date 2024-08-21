@@ -6,7 +6,7 @@
 #    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/07/22 21:53:11 by martalop         ###   ########.fr        #
+#    Updated: 2024/08/21 15:09:15 by ineimatu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ CC = cc
 
 RFLAG = -lreadline
 
-CFLAGS = -Wall -Werror -Wextra -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra #-fsanitize=address
 
 LIBFT_A = libft/libft.a
 
