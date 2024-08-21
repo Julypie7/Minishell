@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 14:32:50 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/02 13:13:03 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:53:39 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	print_lex_lst(t_lex_lst *node)
 		return ;
 	while (tmp)
 	{
-		printf("%p\nword: %d\ntype: %d\nt_content: %s\nelem: %d\nnext: %p\n\n", node, node->word, node->type, node->t_content, node->elem, node->next);
+		printf("%p\nword: %s\ntype: %d\nt_content: %s\nnext: %p\n\n", tmp, tmp->word, tmp->type, tmp->t_content, tmp->next);
 		tmp = tmp->next;
 	}
 }*/
@@ -29,7 +29,7 @@ void	print_lex_lst(t_lex_lst *node)
 t_lex_lst	*new_node(char *str, char *token, t_info *info)
 {
 	t_lex_lst *new_node;
-	static int	i = 0;
+	//int	i = 0;
 
 	new_node = malloc(sizeof(t_lex_lst) * 1);
 	if (!new_node)
@@ -52,7 +52,7 @@ t_lex_lst	*new_node(char *str, char *token, t_info *info)
 			new_node->type = PIPE;
 	}
 	new_node->t_content = token;
-	new_node->elem = i++;
+//	new_node->elem = i++;
 	new_node->next = NULL;
 	return (new_node);
 }

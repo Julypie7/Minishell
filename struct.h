@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/02 13:01:53 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:51:38 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_lex_lst
 	char	*word;
 	t_type	type;
 	char	*t_content;
-	int	elem;
+	//int	elem;
 	struct s_lex_lst	*next;
 }	t_lex_lst;
 

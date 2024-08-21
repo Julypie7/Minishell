@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 10:33:28 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/02 13:07:17 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:13:02 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,12 @@ int	check_token(t_info *info, int i)
 	}
 	else 
 	{
-		if (i == 0)
+	/*	if (i == 0)
 		{
-			exit_free("syntax error", 1, info);
+			error_msg("Syntax error\n");
 			return (-1);
 		}
+		*/
 		if (!add_node(NULL, "|", info))
 		{
 			exit_free("err w pipe node", 2, info);

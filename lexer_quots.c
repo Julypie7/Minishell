@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 13:31:23 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/01 12:44:17 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:34:11 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,14 @@ static size_t	ft_strlen(char *s)
 }
 */
 
+void	error_msg(char *str)
+{
+	write(2, str, ft_strlen(str));
+}
+
 void	exit_free(char *str, int i, t_info *info)
 {
-	write(1, str, ft_strlen(str));
+	write(2, str, ft_strlen(str));
 	if (i == 1)
 	{
 		free_envlst(info->envp);
@@ -54,7 +59,7 @@ int valid_line(t_info *info)
 				i++;
 			if(info->rl[i] == '\0')
 				{
-					exit_free("Doble quotes are not closed\n", 1, info);
+					error_msg("Doble quotes are not closed\n");
 					return(0);
 				}
 		}
@@ -65,7 +70,7 @@ int valid_line(t_info *info)
 				i++;
 			if(info->rl[i] == '\0')
 			{
-				exit_free("Single quotes aren't closed\n", 1, info);
+				error_msg("Single quotes aren't closed\n");
 				return(0);
 			}
 		}

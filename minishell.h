@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/07/24 13:17:21 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/19 14:07:34 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include "struct.h"
 
 // initial functions
-void	start_reading(t_info *info);
+int		start_reading(t_info *info);
 void	init_struct(t_info *info, char **env);
 int		main(int argc, char **argv, char **env);
 
