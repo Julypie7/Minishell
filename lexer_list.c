@@ -6,12 +6,12 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 14:32:50 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/21 17:10:23 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:21:03 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-/*
+
 void	print_lex_lst(t_lex_lst *node)
 {
 	t_lex_lst	*tmp;
@@ -24,7 +24,7 @@ void	print_lex_lst(t_lex_lst *node)
 		printf("%p\nword: %s\ntype: %d\nt_content: %s\nnext: %p\n\n", tmp, tmp->word, tmp->type, tmp->t_content, tmp->next);
 		tmp = tmp->next;
 	}
-}*/
+}
 
 t_lex_lst	*new_node(char *str, char *token, t_info *info)
 {
