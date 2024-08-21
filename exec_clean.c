@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/20 14:38:17 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:18:44 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ int	find_cmd_type(char *str)
 	int		i;
 
 	i = 0;
+	if (!str)
+		return ;
 	arr_b = malloc(sizeof(char *) * 8);
-	if (!arr_b)
+	if (!arr_b || fill_arr_b(arr_b) == 2)
 		return (2);
-	if (fill_arr_b(arr_b) == 2)
-		return (2);	
 	while (arr_b[i])
 	{
 		if (!ft_strncmp(str, arr_b[i], ft_strlen(arr_b[i]) + 1))
@@ -97,8 +97,22 @@ int	exec_mult_cmd(t_exec *cmd)
 		exec_cmd;
 }
 
-int	exec_simp_cmd(t_exec *cmd)
+int	exec_simp_cmd(t_exec *cmd, t_info *info)
 {
+	cmd->pid = fork();
+	if (!cmd->pid)
+		return (0);
+	if (cmd->pid == 0)
+	{
+		redirect(cmd->redirs);
+		if (execve(cmd->path, cmd->arr_cmd, cmd->env) == -1)
+		{
+			write(2, "execve failed\n", 14);
+			info->ex_stat = 1;
+			exit(1);
+		}
+	}
+	return (1);
 }
 
 int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
@@ -109,7 +123,7 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 	while (seg_tmp)
 	{
 		// set_command(); para findpath, etc
-		// heredoc??
+		// crear heredoc y me devuelve fd
 
 		// SI HAY MÁS CMDS
 		if (seg_tmp->next)
@@ -118,9 +132,7 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 		// SI SOLO HAY UN CMD Y ES CMD
 		else if (!seg_tmp->next && find_cmd_type(seg_tmp->arr_cmd[0]))
 		{
-			// fork
-			// redirs
-			exec_simp_cmd();
+			exec_simp_cmd(seg_tmp, info);
 		}
 		// close en padre de las partes de la pipe no utilizadas?
 		
