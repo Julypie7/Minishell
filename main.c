@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/21 15:14:20 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/07/22 21:46:31 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	init_struct(t_info *info, char **env)
 	free_array(arr);
 }
 
-int	start_reading(t_info *info)
+void	start_reading(t_info *info)
 {
 	int i;
 
@@ -35,24 +35,13 @@ int	start_reading(t_info *info)
 	while (i < 5)
 	{
 		info->rl = readline("our minishell > ");
-		/*printf("user input: %s\n", info->rl);*/
-		if(!valid_line(info))
-		{
-			free(info->rl);
-			i++;
-			continue;
-		}
-		if (!lexer(info))
-			exit (0);
+		printf("user input: %s\n", info->rl);
 		//clasificar string
-	//	print_lex_lst(info->tokens);
-		free_lexlst(info->tokens);
-		info->tokens = NULL;
 		free(info->rl);
 		i++;
 	}
-	//rl_clear_history();
-	return (1);
+	rl_clear_history();
+
 }
 
 int	main(int argc, char **argv, char **env)
@@ -66,10 +55,7 @@ int	main(int argc, char **argv, char **env)
 		exit(1);
 	}
 	init_struct(&info, env);
-	if (start_reading(&info))
-	{
-		free_envlst(info.envp);
-		free_lexlst(info.tokens);
-	}	
+	start_reading(&info);
+	free_envlst(info.envp);
 	return (info.ex_stat);
 }
