@@ -6,14 +6,14 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/20 13:28:11 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/21 20:53:08 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
 #include "execution.h"
-
+#include "struct.h"
 
 // ----  cat | ls ----
 

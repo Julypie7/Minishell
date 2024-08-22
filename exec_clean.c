@@ -6,14 +6,14 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/21 15:18:44 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/22 16:35:27 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
 #include "execution.h"
-
+#include "struct.h"
 
 // ----  cat | ls ----
 
@@ -140,7 +140,7 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 		else if (!seg_tmp->next && !find_cmd_type(seg_tmp->arr_cmd[0]))
 		{
 			// redirs con dup2 en padre
-			exec_builtin;
+			exec_builtin(seg_tmp->arr_cmd, info);
 			// resertear STD_IN y STD_OUT a el 0 y 1 original
 		}
 		seg_tmp = seg_tmp->next;
