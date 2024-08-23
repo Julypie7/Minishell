@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/21 20:54:08 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:04:15 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ char	*check_cmd_access(char **paths, char *cmd);
 
 // EXECUTION
 int	heredoc(char *lim);
+int	open_redir(t_redir *redirs);
+int	redirect(t_redir *redirs);
 
 // BUILTIN CHECK
 int	fill_arr_b(char **arr_b);

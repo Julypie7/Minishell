@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/21 20:52:53 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/23 18:54:48 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	heredoc(char *lim)
 			close(pipe_here[1]);
 			break ;
 		}
-		// si la linea leida NO es = limiter, guardo la linea en el fd de escritura de la pipe
+		// si la linea leida NO es = limiter, guardo la linea en el fd de escritura de la pipe y sigo leyendo
 		write(pipe_here[1], str, ft_strlen(str));
 		write(pipe_here[1], "\n", 1);
 		free(str);
@@ -69,14 +69,14 @@ int	open_redir(t_redir *redirs)
 				return (1);
 			}
 		}
-		else if (redirs->token == HEREDOC)
+/*		else if (redirs->token == HEREDOC)
 		{
 		//	write(2, "open con heredoc\n", 17); 
 			redirs->fd = heredoc(redirs->file_name); // heredoc devuelve el fd de lectura de la pipe del documento heredoc
 											 // file_name es el limiter
 			if (redirs->fd == -1)
 				return (1);
-		}
+		}*/
 		else if (redirs->token == APPEND)
 		{
 		//	write(2, "open con append\n", 16);
