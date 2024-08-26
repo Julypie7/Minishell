@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/23 13:17:47 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/23 13:32:53 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:37:18 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-void    env_to_list(t_info *info, char **env);
+/*void    env_to_list(t_info *info, char **env);
 
 int ft_strcmp(const char *s1, const char *s2) {
     while (*s1 && (*s1 == *s2)) {
@@ -37,7 +37,23 @@ int ft_strlen(const char *str)
 		i++;
 	return (i);
 }
+/*
+void	print_env(t_envp *lst)
+{
+	int	i;
+	t_envp	*tmp;
 
+	i = 0;
+	tmp = lst;
+	while (tmp)
+	{
+		printf("%s\n", tmp->key);
+		tmp = tmp->next;
+		i++;
+	}
+}
+*/
+/*
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
@@ -160,15 +176,15 @@ void	env_to_list(t_info *info, char **env)
 		i++;
 	}
 }
-
-void mini_pwd(t_envp *info)
+*/
+void mini_pwd(t_envp *lst)
 {
 	t_envp *tmp;
 
-	tmp = info;
+	tmp = lst;
 	while (tmp)
 	{
-		if (ft_strcmp(tmp->key, "PWD") == 0)
+		if (ft_strcmp(tmp->key, "PWD=") == 0)
 		{	
 			printf("%s\n", tmp->value);
 			exit (1);
@@ -177,18 +193,13 @@ void mini_pwd(t_envp *info)
 			tmp = tmp->next;
 	}
 }
-
+/*
 int main(int argc, char **argv, char **env)
 {	
 	t_info	*info;
 
 	init_struct(info, env);
-	if (ft_strcmp(argv[0], "pwd") == 0)
-	{
-		if(argv[1])
-			printf("No such file or directory\n");
-		else
+	if (ft_strcmp(argv[1], "pwd") == 0)
 			mini_pwd(info->envp);
-	}
 	return (0);
-}
+}*/
