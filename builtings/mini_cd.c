@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:18:27 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/28 15:18:32 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/28 15:53:21 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,6 +272,7 @@ void change_pwd(t_envp *lst)
 			free(lst->value);
 			lst->value = malloc(sizeof(char) * (ft_strlen(swop) + 1));
 			lst->value = ft_strcpy(lst->value, swop);
+			lst = lst->next;
 		}
 		else
 			lst = lst->next;
@@ -312,19 +313,16 @@ void	just_cd(t_envp *lst)
 						return;
 				lst->value = ft_strcpy(lst->value, pwd);
 				printf("oldpwd %s\n", lst->value);
-				printf("pwd %s\n", ft_getenv("PWD=", lst));
+				//printf("pwd %s\n", ft_getenv("PWD=", lst));
 				break;
 			}
 			else
 				lst = lst->next;
 		}
 	}
-	printf("algo");
 	lst = tmp;
-	printf("before");
-	change_pwd(lst);
-	printf("after");
 	printf("pwd %s\n", ft_getenv("PWD=", lst));
+	free(pwd);
 /*	while (lst)
 	{
 		if(ft_strcmp(lst->key, "OLDPWD=") == 0)
