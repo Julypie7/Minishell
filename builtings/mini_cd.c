@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mini_pwd.c                                         :+:      :+:    :+:   */
+/*   mini_cd.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/23 13:17:47 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/28 14:13:27 by ineimatu         ###   ########.fr       */
+/*   Created: 2024/08/28 15:18:27 by ineimatu          #+#    #+#             */
+/*   Updated: 2024/08/28 15:18:32 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-void    env_to_list(t_info *info, char **env);
 
 int ft_strcmp(const char *s1, const char *s2) {
     while (*s1 && (*s1 == *s2)) {
@@ -81,13 +80,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	sub_s[j] = '\0';
 	return (sub_s);
-}
-void	init_struct(t_info *info, char **env)
-{
-	info->envp = NULL;
-	env_to_list(info, env);
-//	print_env(info->envp);
-//	print_char_arr(arr);
 }
 
 int	envlst_size(t_envp *lst)
@@ -176,62 +168,193 @@ void	env_to_list(t_info *info, char **env)
 		i++;
 	}
 }
-/*
-void mini_pwd(t_envp *lst)
+
+void	init_struct(t_info *info, char **env)
 {
-	t_envp *tmp;
-	//char *home;
-	//int i;
+	info->envp = NULL;
+	env_to_list(info, env);
+//	print_env(info->envp);
+//	print_char_arr(arr);
+}
+
+/*
+void	cambiar_env(t_envp *lst)
+{
+}
+
+void	inti_paths(t_pwd *paths)
+{
+	
+void	mini_cd(t_envp *lst)
+{
+	t_envp	*tmp;
+	t_pwd	*path;
+	int i;
 
 	tmp = lst;
-//	i = 0;
+	i = 0;
+	path = malloc(sizeof(t_pwd) * 1);
+	if (!path)
+	{
+		write(2, "mallocerror\n", 12);
+		exit (1);
+	}
 	while (tmp)
 	{
-//		if (ft_strcmp(tmp->key, "HOME=") == 0)
-//				home = tmp->value;
-		if (ft_strcmp(tmp->key, "PWD=") == 0)
+		if (ft_strncmp(tmp->key, "PWD=") == 0)
 		{	
-//			i = 1;
-			printf("%s\n", tmp->value);
-			exit (1);
+			path->pwd = malloc(sizeof(char) * (ft_strlen(tmp->value) + 1))
+			if (!path->pwd)
+				return (NULL);
+			while (i < ft_strlen(tmp->value))
+			{
+				path->pwd[i] = tmp->value[i];
+				i++;
+			}
 		}
+		else if (ft_strncmp(tmp->key, "OLDPWD=") == 0)
+		{
+			path->oldpwd = malloc(sizeof(char) * (ft_strlen(tmp->value) + 1))
+			if (!path->oldpwd)
+				return (NULL);
+			i = 0;
+			while (i < ft_strlen(tmp->value))
+			{
+				path->oldpwd[i] = tmp->value[i];
+				i++;
+			}
+		}
+		else if
+
+}*/
+
+char	*ft_getenv(char *str, t_envp *lst)
+{
+	t_envp *tmp;
+
+	tmp = lst;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->key, str) == 0)
+			return(tmp->value);
 		else
 			tmp = tmp->next;
 	}
-//	if (i == 0)
-//		printf("%s\n", home);
-}*/
-
-void	mini_pwd(t_envp *lst)
-{
-	t_envp *tmp;
-	char *pwd;
-	
-	tmp = lst;
-	pwd = getcwd(NULL, 0);
-	if (!pwd)
-	{
-		while(tmp)
-		{
-			if (ft_strcmp(tmp->key, "PWD=")== 0)
-			{
-				printf("%s\n", tmp->value);
-				exit (0);
-			}
-			else 
-				tmp = tmp->next;
-		}
-	}
-	printf("%s\n", pwd);
-	free(pwd);
+	return ("path doesn't exist");
 }
 
+
+char	*ft_strcpy(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	while (s2[i])
+	{
+		s1[i] = s2[i];
+		i++;
+	}
+	s1[i] = '\0';
+	return (s1);
+}
+
+void change_pwd(t_envp *lst)
+{
+	t_envp *tmp;
+	char *swop;
+
+	tmp = lst;
+	swop = getcwd(NULL, 0);
+	while (lst)
+	{
+		if (ft_strcmp(lst->key, "PWD=") == 0)
+		{
+			free(lst->value);
+			lst->value = malloc(sizeof(char) * (ft_strlen(swop) + 1));
+			lst->value = ft_strcpy(lst->value, swop);
+		}
+		else
+			lst = lst->next;
+	}
+	lst = tmp;
+	free(swop);
+}
+
+void	just_cd(t_envp *lst)
+{
+	t_envp	*tmp;
+	tmp = lst;
+
+	char *pwd;
+
+	pwd = getcwd(NULL, 0);
+	/*int i;
+	i = chdir("/home/ineimatu");
+	pwd = getcwd(NULL, 0);
+	printf("%d\n %s\n", i, pwd);
+*/
+	if (chdir("/home/ineimatu") == -1)
+	{	
+		printf("cd: HOME not set\n");
+		exit(1);
+	}
+	else
+	{	
+		change_pwd(lst);
+		while (lst)
+		{
+			if (ft_strcmp(lst->key, "OLDPWD=") == 0)
+			{
+			//pwd = ft_strcpy(pwd, lst->value);
+				free(lst->value);
+				lst->value = malloc(sizeof(char) * (ft_strlen(pwd) + 1));
+					if (!lst->value)
+						return;
+				lst->value = ft_strcpy(lst->value, pwd);
+				printf("oldpwd %s\n", lst->value);
+				printf("pwd %s\n", ft_getenv("PWD=", lst));
+				break;
+			}
+			else
+				lst = lst->next;
+		}
+	}
+	printf("algo");
+	lst = tmp;
+	printf("before");
+	change_pwd(lst);
+	printf("after");
+	printf("pwd %s\n", ft_getenv("PWD=", lst));
+/*	while (lst)
+	{
+		if(ft_strcmp(lst->key, "OLDPWD=") == 0)
+		{
+		//	free(lst->value);
+		//	lst->value = malloc(sizeof(char) * ft_strlen(pwd) + 1);
+		//	lst->value = ft_strcpy(lst->value, pwd);
+			printf("old pwd %s\n", lst->value);
+		}
+		else 
+			lst = lst->next;
+	}
+	lst = tmp;*/
+}
+
+	
+
+
 int main(int argc, char **argv, char **env)
-{	
+{
 	t_info	*info;
 
 	init_struct(info, env);
-	if (ft_strcmp(argv[1], "pwd") == 0)
-			mini_pwd(info->envp);
+	if (argc == 4)
+	{	
+		printf("Too many arguments\n");
+		exit(1);
+	}
+	if (ft_strcmp(argv[1], "cd") == 0 && argc == 2)
+			just_cd(info->envp);
 	return (0);
 }
+
