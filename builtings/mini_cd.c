@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:18:27 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/28 15:53:21 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/08/29 10:40:35 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ void change_pwd(t_envp *lst)
 	free(swop);
 }
 
-void	just_cd(t_envp *lst)
+void	just_cd(t_envp *lst, char *path)
 {
 	t_envp	*tmp;
 	tmp = lst;
@@ -294,7 +294,7 @@ void	just_cd(t_envp *lst)
 	pwd = getcwd(NULL, 0);
 	printf("%d\n %s\n", i, pwd);
 */
-	if (chdir("/home/ineimatu") == -1)
+	if (chdir(path) == -1)
 	{	
 		printf("cd: HOME not set\n");
 		exit(1);
@@ -344,15 +344,19 @@ void	just_cd(t_envp *lst)
 int main(int argc, char **argv, char **env)
 {
 	t_info	*info;
-
+	char *home;
+	
 	init_struct(info, env);
+	home = ft_getenv("HOME=", info->envp);
 	if (argc == 4)
 	{	
 		printf("Too many arguments\n");
 		exit(1);
 	}
-	if (ft_strcmp(argv[1], "cd") == 0 && argc == 2)
-			just_cd(info->envp);
+	else if (ft_strcmp(argv[1], "cd") == 0 && argc == 2)
+			just_cd(info->envp, home);
+	else if (ft_strcmp(argv[1], "cd") == 0 && argc == 3)
+			just_cd(info->envp, argv[2]);
 	return (0);
 }
 
