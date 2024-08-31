@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/29 19:49:39 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/31 17:21:52 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/wait.h>
-
-// ----  cat | ls ----
 
 int	fill_arr_b(char **arr_b)
 {
@@ -197,8 +195,7 @@ int	exec_mult_cmd(t_cmd *cmd, t_exec *exec_info)
 			open_redir_m(cmd);		
 	//		redirect(cmd->redirs);
 			redirect_m(cmd);
-			if (cmd->indx == 1)
-				close(exec_info->pipe_end[0]); // ????
+			close(exec_info->pipe_end[0]); // cierro el fd de lectura de la pipe ACTUAL (nunca lo necesito)
 			// preguntarme si es builtin o no
 			if (find_cmd_type(cmd->arr_cmd[0]))
 			{
@@ -212,6 +209,7 @@ int	exec_mult_cmd(t_cmd *cmd, t_exec *exec_info)
 				exec_builtin(cmd->arr_cmd);
 		}
 		close(exec_info->pipe_end[1]); // cierro la parte de escritura de la pipe actual
+		close(cmd->fd_in); // cierro la parte de lectura de la pipe anterior
 		cmd = cmd->next;
 		i++;
 	}
@@ -298,9 +296,11 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	t_cmd	*cmds;
 	t_cmd	*cmd2;
 	t_cmd	*cmd3;
+	t_cmd	*cmd4;
 	char	**arr_cmd;
 	char	**arr_cmd2;
 	char	**arr_cmd3;
+	char	**arr_cmd4;
 
 	cmds = malloc(sizeof(t_cmd) * 1);
 	if (!cmds)
@@ -364,6 +364,28 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd3->next = NULL;
 
 	cmd2->next = cmd3;
+
+	cmd4 = malloc(sizeof(t_cmd) * 1);
+	if (!cmd4)
+		return (NULL);
+	arr_cmd4 = malloc(sizeof(char *) * 2);
+	if (!arr_cmd4)
+		return (NULL);
+	arr_cmd4[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
+	if (!arr_cmd4[0])
+		return (NULL);
+	arr_cmd4[0] = argv[7];
+	arr_cmd4[1] = NULL;
+	cmd4->arr_cmd = arr_cmd4;
+	cmd4->path = find_path(paths, cmd4->arr_cmd);
+	cmd4->env = env;
+	cmd4->fd_in = -1;
+	cmd4->fd_out = -1;
+	cmd4->redirs = NULL;
+	cmd4->indx = 2;
+	cmd4->next = NULL;
+
+	cmd3->next = cmd4;
 
 //	print_cmds(cmds);
 	return (cmds);

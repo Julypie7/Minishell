@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/23 18:54:48 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/31 14:43:17 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ void	print_redirs_lst(t_redir *redirs)
 	}
 }
 
-int	main(int argc, char **argv, char **env)
+/*int	main(int argc, char **argv, char **env)
 {
 	t_info	info;
 	t_exec	exec_info;
@@ -307,4 +307,4 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	waitpid(cmd->pid, &(info.ex_stat), 0);
 	return (WEXITSTATUS(info.ex_stat));
-}
+}*/
