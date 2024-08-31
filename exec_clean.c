@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/31 17:21:52 by martalop         ###   ########.fr       */
+/*   Updated: 2024/08/31 18:04:35 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int	open_redir_m(t_cmd *cmd)
 	{
 		if (cmd->redirs->token == INPUT)
 		{
-			//	write(2, "open con input\n", 15);
+			write(2, "open con input\n", 15);
 			cmd->fd_in = open(cmd->redirs->file_name, O_RDONLY);
 			if (cmd->fd_in == -1)
 			{
@@ -120,7 +120,7 @@ int	open_redir_m(t_cmd *cmd)
 		}
 		else if (cmd->redirs->token == APPEND)
 		{
-			//	write(2, "open con append\n", 16);
+			write(2, "open con append\n", 16);
 			cmd->fd_out = open(cmd->redirs->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
 			if (cmd->fd_out == -1)
 			{
@@ -130,7 +130,7 @@ int	open_redir_m(t_cmd *cmd)
 		}
 		else if (cmd->redirs->token == OUTPUT)
 		{
-			//	write(2, "open con output\n", 16);
+			write(2, "open con output\n", 16);
 			cmd->fd_out = open(cmd->redirs->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (cmd->fd_out == -1)
 			{
@@ -192,7 +192,7 @@ int	exec_mult_cmd(t_cmd *cmd, t_exec *exec_info)
 			return (1);
 		if (cmd->pid == 0)
 		{
-			open_redir_m(cmd);		
+			open_redir_m(cmd);	
 	//		redirect(cmd->redirs);
 			redirect_m(cmd);
 			close(exec_info->pipe_end[0]); // cierro el fd de lectura de la pipe ACTUAL (nunca lo necesito)
@@ -247,17 +247,19 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info)
 int	find_heredocs(t_cmd *cmds)
 {
 	t_cmd	*tmp_cmd;
+	t_redir	*tmp_rdir;
 
 	tmp_cmd = cmds;
 	while (tmp_cmd)
 	{
 		if (tmp_cmd->redirs)
 		{
-			while (tmp_cmd->redirs)
+			tmp_rdir = tmp_cmd->redirs;
+			while (tmp_rdir)
 			{
-				if (tmp_cmd->redirs->token == HEREDOC)
-					tmp_cmd->redirs->fd = heredoc(tmp_cmd->redirs->file_name);
-				tmp_cmd->redirs = tmp_cmd->redirs->next;
+				if (tmp_rdir->token == HEREDOC)
+					tmp_rdir->fd = heredoc(tmp_rdir->file_name);
+				tmp_rdir = tmp_rdir->next;
 			}
 		}
 		tmp_cmd = tmp_cmd->next;
@@ -309,7 +311,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	if (!arr_cmd)
 		return (NULL);
 //	arr_cmd[0] = malloc(sizeof(char) * (ft_strlen(argv[1]) + 1));
-	arr_cmd[0] = argv[1];
+	arr_cmd[0] = argv[3];
 //	arr_cmd[1] = argv[2];
 	arr_cmd[1] = NULL;
 	cmds->arr_cmd = arr_cmd;
@@ -317,9 +319,18 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmds->env = env;
 	cmds->fd_in = -1;
 	cmds->fd_out = -1;
-	cmds->redirs = NULL;
+//	cmds->redirs = NULL;
 	cmds->indx = 1;
 	cmds->next = NULL;
+
+		//  REDIRS LIST
+	cmds->redirs = malloc(sizeof(t_redir) * 1);
+	if (!cmds->redirs)
+		return (NULL);
+	cmds->redirs->token = INPUT;
+	cmds->redirs->file_name = argv[2];
+	cmds->redirs->fd = -1;
+	cmds->redirs->next = NULL;
 
 	cmd2 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd2)
@@ -330,7 +341,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd2[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
 	if (!arr_cmd2[0])
 		return (NULL);
-	arr_cmd2[0] = argv[3];
+	arr_cmd2[0] = argv[5];
 	arr_cmd2[1] = NULL;
 	cmd2->arr_cmd = arr_cmd2;
 	cmd2->path = find_path(paths, cmd2->arr_cmd);
@@ -352,7 +363,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd3[0] = malloc(sizeof(char) * (ft_strlen(argv[5]) + 1));
 	if (!arr_cmd3[0])
 		return (NULL);
-	arr_cmd3[0] = argv[5];
+	arr_cmd3[0] = argv[7];
 	arr_cmd3[1] = NULL;
 	cmd3->arr_cmd = arr_cmd3;
 	cmd3->path = find_path(paths, cmd3->arr_cmd);
@@ -374,7 +385,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd4[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
 	if (!arr_cmd4[0])
 		return (NULL);
-	arr_cmd4[0] = argv[7];
+	arr_cmd4[0] = argv[9];
 	arr_cmd4[1] = NULL;
 	cmd4->arr_cmd = arr_cmd4;
 	cmd4->path = find_path(paths, cmd4->arr_cmd);
@@ -382,12 +393,13 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd4->fd_in = -1;
 	cmd4->fd_out = -1;
 	cmd4->redirs = NULL;
-	cmd4->indx = 2;
+	cmd4->indx = 4;
 	cmd4->next = NULL;
 
 	cmd3->next = cmd4;
 
 //	print_cmds(cmds);
+//	print_redirs_lst(cmds->redirs);
 	return (cmds);
 }
 
