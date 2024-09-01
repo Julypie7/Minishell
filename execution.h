@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/31 17:47:48 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/01 20:54:28 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@ int	open_redir(t_redir *redirs);
 int	redirect(t_redir *redirs);
 int	count_cmds(char *rl);
 void	print_redirs_lst(t_redir *redirs);
+void	free_redir_lst(t_redir *redirs);
+void	free_cmds(t_cmd *cmds);
+void	free_exec_info(t_exec *exec_info);
 
 // BUILTIN CHECK
 int	fill_arr_b(char **arr_b);

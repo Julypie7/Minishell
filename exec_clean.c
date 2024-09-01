@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/01 18:29:16 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/01 21:33:19 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,7 +279,8 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd = malloc(sizeof(char *) * 2);
 	if (!arr_cmd)
 		return (NULL);
-	arr_cmd[0] = argv[3];
+	arr_cmd[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
+	ft_strlcpy(arr_cmd[0], argv[3], (ft_strlen(argv[3]) + 1));
 	arr_cmd[1] = NULL;
 	cmds->arr_cmd = arr_cmd;
 	cmds->path = find_path(paths, cmds->arr_cmd);
@@ -298,7 +299,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmds->redirs->fd = -1;
 	cmds->redirs->next = NULL;
 
-	cmd2 = malloc(sizeof(t_cmd) * 1);
+/*	cmd2 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd2)
 		return (NULL);
 	arr_cmd2 = malloc(sizeof(char *) * 2);
@@ -368,7 +369,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd4->redirs->token = HEREDOC;
 	cmd4->redirs->file_name = argv[11];
 	cmd4->redirs->fd = -1;
-	cmd4->redirs->next = NULL;
+	cmd4->redirs->next = NULL;*/
 	
 /*	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
@@ -392,13 +393,12 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 	int	i;
 
 	i = 0;
+	// create exec_info here
 	find_heredocs(segmts);
 	if (!segmts->next)
 		return (WEXITSTATUS(exec_simp_cmd(segmts, info)));
 	if (segmts)
-	{
 		exec_mult_cmd(segmts, exec_info);
-	}
 	while (i < exec_info->cmd_num)
 	{
 		waitpid(segmts->pid, &info->ex_stat, 0);
@@ -424,5 +424,7 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	}
 	printf("execution res: %d\n", executor(cmds, &info, exec_info));
+	free_cmds(cmds);
+	free_exec_info(exec_info);
 	return (0);
 }
