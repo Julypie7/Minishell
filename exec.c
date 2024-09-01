@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/21 20:53:08 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/01 15:29:20 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,37 @@ void	redir_to_pipes(t_cmd *cmd, t_exec *exec_info)
 		if (dup2(exec_info->pipe_end[1], 1) == 1)
 			return (write(2, "dup2 in pipe redirs failedv\n", 28));
 	else if (cmd->next)
+}
+
+int	redir_to_pipes2(t_cmd *cmd, t_exec *exec_info)
+{
+	if (!cmd->next) // es el ultimo cmd
+	{
+		if (dup2(exec_info->pipe_end[0], 0) == 1) // lee de la pipe anterior
+			return (write(2, "dup2 in pipe redirs failed\n", 27), 1);
+		else
+			close(exec_info->pipe_end[0]);
+	}
+	else if (cmd->next)
+	{
+		if (exec_info->cmd_num != 0) // es un cmd en medio de otros
+		{
+			if (dup2(exec_info->pipe_end[0], 0) == 1) // lee de la pipe anterior
+				return (write(2, "dup2 in pipe redirs failed\n", 27), 1);
+			else
+				close(exec_info->pipe_end[0]);
+		}
+		if (dup2(exec_info->pipe_end[1], 1) == 1) // escribe en la pipe actual
+			return (write(2, "dup2 in pipe redirs failed\n", 27), 1);
+		else
+			close(exec_info->pipe_end[1]);
+	}
+	return (0);
+	//		redir_to_pipes(cmd, exec_info);
+				// -> si es el 1er comando, hago solo dup2 de 1 a la pipe[1]
+				// -> si es comando etre otros, hago dup2 de 0 a la pipe[0] anterior y de 1 a la pipe[1] actual
+				// -> si es el ultimo comando, hago dup de 0 a la pipe[0] anterior
+
 }
 
 int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
