@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/01 21:33:19 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:48:08 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,39 +75,42 @@ int	find_cmd_type(char *str)
 
 int	open_redir_m(t_cmd *cmd)
 {
-	while (cmd->redirs)
+	t_redir	*tmp;
+
+	tmp = cmd->redirs;
+	while (tmp)
 	{
-		if (cmd->redirs->token == INPUT)
+		if (tmp->token == INPUT)
 		{
 			write(2, "open con input\n", 15);
-			cmd->fd_in = open(cmd->redirs->file_name, O_RDONLY);
+			cmd->fd_in = open(tmp->file_name, O_RDONLY);
 			if (cmd->fd_in == -1)
 			{
-				perror(cmd->redirs->file_name);
+				perror(tmp->file_name);
 				return (1);
 			}
 		}
-		else if (cmd->redirs->token == APPEND)
+		else if (tmp->token == APPEND)
 		{
 			write(2, "open con append\n", 16);
-			cmd->fd_out = open(cmd->redirs->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
+			cmd->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
 			if (cmd->fd_out == -1)
 			{
-				perror(cmd->redirs->file_name);
+				perror(tmp->file_name);
 				return (1);
 			}
 		}
-		else if (cmd->redirs->token == OUTPUT)
+		else if (tmp->token == OUTPUT)
 		{
 			write(2, "open con output\n", 16);
-			cmd->fd_out = open(cmd->redirs->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			cmd->fd_out = open(tmp->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (cmd->fd_out == -1)
 			{
-				perror(cmd->redirs->file_name);
+				perror(tmp->file_name);
 				return (1);
 			}
 		}
-		cmd->redirs = cmd->redirs->next;
+		tmp = tmp->next;
 	}
 	return (0);
 }
@@ -143,8 +146,11 @@ int	exec_builtin(char **arr_cmd)
 	return (0);
 }
 
-int	exec_mult_cmd(t_cmd *cmd, t_exec *exec_info)
+int	exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info)
 {
+	t_cmd	*cmd;
+
+	cmd = tmp;
 	while (cmd)
 	{
 		if (cmd->next) // quiero NO haga pipe para el último comando
@@ -159,9 +165,13 @@ int	exec_mult_cmd(t_cmd *cmd, t_exec *exec_info)
 		if (cmd->pid == 0)
 		{
 			if (open_redir_m(cmd) == 1)
-				exit(0); // no sé qué num poner
+			{
+				free_exec_info(exec_info);
+				free_cmds(cmd);
+				exit(1); // no sé qué num poner
+			}
 			if (redirect_m(cmd) == 1)
-				exit(0);
+				exit(1);
 			close(exec_info->pipe_end[0]); // cierro el fd de lectura de la pipe ACTUAL
 			if (find_cmd_type(cmd->arr_cmd[0]))
 			{
@@ -173,11 +183,20 @@ int	exec_mult_cmd(t_cmd *cmd, t_exec *exec_info)
 			}
 			exec_builtin(cmd->arr_cmd);
 		}
-		close(exec_info->pipe_end[1]); // cierro la parte de escritura de la pipe actual
-		close(cmd->fd_in); // cierro la parte de lectura de la pipe anterior
+		if (exec_info->pipe_end[1] != -1)
+			close(exec_info->pipe_end[1]); // cierro la parte de escritura de la pipe actual
+		else
+			write(2, "NO cierro pipe_end[1]\n", 22);
+		if (cmd->fd_in != -1)
+			close(cmd->fd_in); // cierro la parte de lectura de la pipe anterior
+		else
+			write(2, "NO cierro fd_in\n", 16);
 		cmd = cmd->next;
 	}
-	close(exec_info->pipe_end[0]);
+	if (exec_info->pipe_end[0] != -1)
+		close(exec_info->pipe_end[0]);
+	else
+		write(2, "NO cierro pipe_end[0]\n", 22);
 	return (0);
 }
 
@@ -252,22 +271,14 @@ t_exec *set_exec_info(char **env, char *rl)
 	return (exec_info);
 }
 
-void	print_cmds(t_cmd *cmds)
-{
-	while (cmds)
-	{
-		printf("CMD\narr_cmd[0]: %s, arr_cmd[1]: %s\npath: %s\nfd_in: %d, fd_out: %d\nredirs: %p\nindex: %d\n", cmds->arr_cmd[0], cmds->arr_cmd[1], cmds->path, cmds->fd_in, cmds->fd_out, cmds->redirs, cmds->indx);
-		cmds = cmds->next;
-	}
-}
-
 t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 {
 	t_cmd	*cmds;
 	t_cmd	*cmd2;
 	t_cmd	*cmd3;
 	t_cmd	*cmd4;
-//	t_redir	*tmp;
+	t_redir	*tmp;
+	t_redir	*tmp2;
 	char	**arr_cmd;
 	char	**arr_cmd2;
 	char	**arr_cmd3;
@@ -279,27 +290,49 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd = malloc(sizeof(char *) * 2);
 	if (!arr_cmd)
 		return (NULL);
-	arr_cmd[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
-	ft_strlcpy(arr_cmd[0], argv[3], (ft_strlen(argv[3]) + 1));
+	arr_cmd[0] = malloc(sizeof(char) * (ft_strlen(argv[1]) + 1));
+	if (!arr_cmd[0])
+		return (NULL);
+	ft_strlcpy(arr_cmd[0], argv[1], (ft_strlen(argv[1]) + 1));
 	arr_cmd[1] = NULL;
 	cmds->arr_cmd = arr_cmd;
 	cmds->path = find_path(paths, cmds->arr_cmd);
 	cmds->env = env;
 	cmds->fd_in = -1;
 	cmds->fd_out = -1;
-//	cmds->redirs = NULL;
+	cmds->redirs = NULL;
 	cmds->indx = 1;
 	cmds->next = NULL;
 
-	cmds->redirs = malloc(sizeof(t_redir) * 1);
+/*	cmds->redirs = malloc(sizeof(t_redir) * 1);
 	if (!cmds->redirs)
 		return (NULL);
-	cmds->redirs->token = HEREDOC;
-	cmds->redirs->file_name = argv[2];
+	cmds->redirs->token = OUTPUT;
+	cmds->redirs->file_name = argv[8];
 	cmds->redirs->fd = -1;
-	cmds->redirs->next = NULL;
+	cmds->redirs->next = NULL;*/
 
-/*	cmd2 = malloc(sizeof(t_cmd) * 1);
+/*	tmp = malloc(sizeof(t_redir) * 1);
+	if (!tmp)
+		return (NULL);
+	tmp->token = HEREDOC;
+	tmp->file_name = argv[5];
+	tmp->fd = -1;
+	tmp->next = NULL;
+
+	cmds->redirs->next = tmp;
+	
+	tmp2 = malloc(sizeof(t_redir) * 1);
+	if (!tmp2)
+		return (NULL);
+	tmp2->token = OUTPUT;
+	tmp2->file_name = argv[7];
+	tmp2->fd = -1;
+	tmp2->next = NULL;
+
+	tmp->next = tmp2;*/
+
+	cmd2 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd2)
 		return (NULL);
 	arr_cmd2 = malloc(sizeof(char *) * 2);
@@ -308,7 +341,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd2[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
 	if (!arr_cmd2[0])
 		return (NULL);
-	arr_cmd2[0] = argv[5];
+	ft_strlcpy(arr_cmd2[0], argv[3], (ft_strlen(argv[3]) + 1));
 	arr_cmd2[1] = NULL;
 	cmd2->arr_cmd = arr_cmd2;
 	cmd2->path = find_path(paths, cmd2->arr_cmd);
@@ -319,7 +352,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd2->indx = 2;
 	cmd2->next = NULL;
 
-//	cmds->next = cmd2;
+	cmds->next = cmd2;
 
 	cmd3 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd3)
@@ -330,7 +363,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd3[0] = malloc(sizeof(char) * (ft_strlen(argv[5]) + 1));
 	if (!arr_cmd3[0])
 		return (NULL);
-	arr_cmd3[0] = argv[7];
+	ft_strlcpy(arr_cmd3[0], argv[5], (ft_strlen(argv[5]) + 1));
 	arr_cmd3[1] = NULL;
 	cmd3->arr_cmd = arr_cmd3;
 	cmd3->path = find_path(paths, cmd3->arr_cmd);
@@ -341,7 +374,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd3->indx = 3;
 	cmd3->next = NULL;
 
-//	cmd2->next = cmd3;
+	cmd2->next = cmd3;
 
 	cmd4 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd4)
@@ -349,21 +382,21 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	arr_cmd4 = malloc(sizeof(char *) * 2);
 	if (!arr_cmd4)
 		return (NULL);
-	arr_cmd4[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
+	arr_cmd4[0] = malloc(sizeof(char) * (ft_strlen(argv[7]) + 1));
 	if (!arr_cmd4[0])
 		return (NULL);
-	arr_cmd4[0] = argv[9];
+	ft_strlcpy(arr_cmd4[0], argv[7], (ft_strlen(argv[7]) + 1));
 	arr_cmd4[1] = NULL;
 	cmd4->arr_cmd = arr_cmd4;
 	cmd4->path = find_path(paths, cmd4->arr_cmd);
 	cmd4->env = env;
 	cmd4->fd_in = -1;
 	cmd4->fd_out = -1;
-//	cmd4->redirs = NULL;
+	cmd4->redirs = NULL;
 	cmd4->indx = 4;
 	cmd4->next = NULL;
 
-	cmd4->redirs = malloc(sizeof(t_redir) * 1);
+/*	cmd4->redirs = malloc(sizeof(t_redir) * 1);
 	if (!cmd4->redirs)
 		return (NULL);
 	cmd4->redirs->token = HEREDOC;
@@ -381,7 +414,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 
 	cmd4->redirs->next = tmp;*/
 
-	//cmd3->next = cmd4;
+	cmd3->next = cmd4;
 
 //	print_cmds(cmds);
 //	print_redirs_lst(cmds->redirs);
@@ -398,10 +431,12 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 	if (!segmts->next)
 		return (WEXITSTATUS(exec_simp_cmd(segmts, info)));
 	if (segmts)
-		exec_mult_cmd(segmts, exec_info);
-	while (i < exec_info->cmd_num)
+		exec_mult_cmd(segmts, exec_info, info);
+	while (segmts && i < exec_info->cmd_num)
 	{
-		waitpid(segmts->pid, &info->ex_stat, 0);
+		waitpid(segmts->pid, &(info->ex_stat), 0);
+		printf("%d en %d\n", WEXITSTATUS(info->ex_stat), i);
+		segmts = segmts->next;
 		i++;
 	}
 	return (WEXITSTATUS(info->ex_stat));
@@ -417,6 +452,8 @@ int	main(int argc, char **argv, char **env)
 	t_cmd	*cmds;
 
 	exec_info = set_exec_info(env, argv[1]); // todos los posibles paths, or_fds, etc
+	if (!exec_info)
+		return (write(2, "issue exec_info\n", 16), 1);
 	cmds = hardcore_commands(argv, env, exec_info->paths); // para findpath, get arr_cmd, etc
 	if (!cmds)
 	{
@@ -424,7 +461,8 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	}
 	printf("execution res: %d\n", executor(cmds, &info, exec_info));
-	free_cmds(cmds);
+	free_cmds(cmds); 
 	free_exec_info(exec_info);
+	// si en algun momento estos frees intenta liberar algo sin malloc, tipo argv[i], da SEGFAULT
 	return (0);
 }

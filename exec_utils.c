@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:39:55 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/01 21:04:31 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:46:49 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,3 +51,28 @@ void	free_cmds(t_cmd *cmds)
 		cmds = tmp;
 	}
 }
+
+void	print_cmds(t_cmd *cmds)
+{
+	t_cmd	*aux;
+
+	aux = cmds;
+	while (aux)
+	{
+		printf("CMD[%p]\narr_cmd[0]: %s, arr_cmd[1]: %s\npath: %s\npid : %d\nfd_in: %d, fd_out: %d\nredirs: %p\nindex: %d\n\n", aux, aux->arr_cmd[0], aux->arr_cmd[1], aux->path, aux->pid, aux->fd_in, aux->fd_out, aux->redirs, aux->indx);
+		aux = aux->next;
+	}
+}
+
+void	print_redirs_lst(t_redir *redirs)
+{
+	t_redir	*tmp;
+
+	tmp = redirs;
+	while (tmp)
+	{
+		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\n\n", tmp, tmp->token, tmp->file_name, tmp->fd);
+		tmp = tmp->next;
+	}
+}
+

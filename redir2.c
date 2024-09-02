@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/31 14:43:17 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/02 20:47:19 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,18 +279,6 @@ int	execute(t_cmd *cmd, t_info *info)
 // si execve tiene el path de 'cat' pero un char ** de 'ls' como argumento, por qué no falla??
 	// -> parece ser que sustituye el primer argumento del array con el path que le mandemos
 	// -> por tanto si el path es correcto, da igual cual sea el argumento, que lo ejecutará bien
-
-void	print_redirs_lst(t_redir *redirs)
-{
-	t_redir	*tmp;
-
-	tmp = redirs;
-	while (tmp)
-	{
-		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\n\n", tmp, tmp->token, tmp->file_name, tmp->fd);
-		tmp = tmp->next;
-	}
-}
 
 /*int	main(int argc, char **argv, char **env)
 {
