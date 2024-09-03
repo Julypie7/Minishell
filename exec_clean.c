@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/02 20:48:08 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/03 17:36:32 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,9 @@ int	exec_builtin(char **arr_cmd)
 int	exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info)
 {
 	t_cmd	*cmd;
+	int i;
 
+	i = 1;
 	cmd = tmp;
 	while (cmd)
 	{
@@ -177,26 +179,21 @@ int	exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info)
 			{
 				if (execve(cmd->path, cmd->arr_cmd, cmd->env) == -1)
 				{
-					write(2, "execve failed\n", 14);
+					cmd_not_found(cmd->path);
+					free_cmds(tmp);
+					free_exec_info(exec_info);
 					exit(127);
 				}
 			}
 			exec_builtin(cmd->arr_cmd);
 		}
-		if (exec_info->pipe_end[1] != -1)
-			close(exec_info->pipe_end[1]); // cierro la parte de escritura de la pipe actual
-		else
-			write(2, "NO cierro pipe_end[1]\n", 22);
-		if (cmd->fd_in != -1)
-			close(cmd->fd_in); // cierro la parte de lectura de la pipe anterior
-		else
-			write(2, "NO cierro fd_in\n", 16);
+		close(exec_info->pipe_end[1]); // cierro la parte de escritura de la pipe actual
+		if (cmd->fd_in != -1) 
+			close(cmd->fd_in); // cierro la parte de lectura de la pipe anterior 
 		cmd = cmd->next;
+		i++;
 	}
-	if (exec_info->pipe_end[0] != -1)
-		close(exec_info->pipe_end[0]);
-	else
-		write(2, "NO cierro pipe_end[0]\n", 22);
+	close(exec_info->pipe_end[0]);
 	return (0);
 }
 
@@ -267,7 +264,7 @@ t_exec *set_exec_info(char **env, char *rl)
 	exec_info->or_fd[0] = dup(0);
 	exec_info->or_fd[1] = dup(1);
 //	exec_info->cmd_num = count_cmds(rl);
-	exec_info->cmd_num = 4;
+	exec_info->cmd_num = 3;
 	return (exec_info);
 }
 
@@ -304,25 +301,25 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmds->indx = 1;
 	cmds->next = NULL;
 
-/*	cmds->redirs = malloc(sizeof(t_redir) * 1);
+	cmds->redirs = malloc(sizeof(t_redir) * 1);
 	if (!cmds->redirs)
 		return (NULL);
-	cmds->redirs->token = OUTPUT;
-	cmds->redirs->file_name = argv[8];
+	cmds->redirs->token = INPUT;
+	cmds->redirs->file_name = argv[2];
 	cmds->redirs->fd = -1;
-	cmds->redirs->next = NULL;*/
+	cmds->redirs->next = NULL;
 
 /*	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
 		return (NULL);
-	tmp->token = HEREDOC;
-	tmp->file_name = argv[5];
+	tmp->token = OUTPUT;
+	tmp->file_name = argv[7];
 	tmp->fd = -1;
 	tmp->next = NULL;
 
-	cmds->redirs->next = tmp;
+	cmds->redirs->next = tmp;*/
 	
-	tmp2 = malloc(sizeof(t_redir) * 1);
+/*	tmp2 = malloc(sizeof(t_redir) * 1);
 	if (!tmp2)
 		return (NULL);
 	tmp2->token = OUTPUT;
@@ -335,14 +332,18 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd2 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd2)
 		return (NULL);
-	arr_cmd2 = malloc(sizeof(char *) * 2);
+	arr_cmd2 = malloc(sizeof(char *) * 3);
 	if (!arr_cmd2)
 		return (NULL);
-	arr_cmd2[0] = malloc(sizeof(char) * (ft_strlen(argv[3]) + 1));
+	arr_cmd2[0] = malloc(sizeof(char) * (ft_strlen(argv[4]) + 1));
 	if (!arr_cmd2[0])
 		return (NULL);
-	ft_strlcpy(arr_cmd2[0], argv[3], (ft_strlen(argv[3]) + 1));
-	arr_cmd2[1] = NULL;
+	ft_strlcpy(arr_cmd2[0], argv[4], (ft_strlen(argv[4]) + 1));
+	arr_cmd2[1] = malloc(sizeof(char) * (ft_strlen(argv[5]) + 1));
+	if (!arr_cmd2[1])
+		return (NULL);
+	ft_strlcpy(arr_cmd2[1], argv[5], (ft_strlen(argv[5]) + 1));
+	arr_cmd2[2] = NULL;
 	cmd2->arr_cmd = arr_cmd2;
 	cmd2->path = find_path(paths, cmd2->arr_cmd);
 	cmd2->env = env;
@@ -354,7 +355,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 
 	cmds->next = cmd2;
 
-	cmd3 = malloc(sizeof(t_cmd) * 1);
+/*	cmd3 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd3)
 		return (NULL);
 	arr_cmd3 = malloc(sizeof(char *) * 2);
@@ -374,9 +375,9 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd3->indx = 3;
 	cmd3->next = NULL;
 
-	cmd2->next = cmd3;
+	cmd2->next = cmd3;*/
 
-	cmd4 = malloc(sizeof(t_cmd) * 1);
+/*	cmd4 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd4)
 		return (NULL);
 	arr_cmd4 = malloc(sizeof(char *) * 2);
@@ -394,7 +395,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd4->fd_out = -1;
 	cmd4->redirs = NULL;
 	cmd4->indx = 4;
-	cmd4->next = NULL;
+	cmd4->next = NULL;*/
 
 /*	cmd4->redirs = malloc(sizeof(t_redir) * 1);
 	if (!cmd4->redirs)
@@ -414,7 +415,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 
 	cmd4->redirs->next = tmp;*/
 
-	cmd3->next = cmd4;
+//	cmd3->next = cmd4;
 
 //	print_cmds(cmds);
 //	print_redirs_lst(cmds->redirs);
@@ -424,21 +425,26 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 {
 	int	i;
+	t_cmd	*aux;
 
 	i = 0;
+	aux = segmts;
 	// create exec_info here
 	find_heredocs(segmts);
 	if (!segmts->next)
 		return (WEXITSTATUS(exec_simp_cmd(segmts, info)));
 	if (segmts)
 		exec_mult_cmd(segmts, exec_info, info);
-	while (segmts && i < exec_info->cmd_num)
+	while (aux && i < exec_info->cmd_num)
 	{
-		waitpid(segmts->pid, &(info->ex_stat), 0);
-		printf("%d en %d\n", WEXITSTATUS(info->ex_stat), i);
-		segmts = segmts->next;
+		waitpid(aux->pid, &(info->ex_stat), 0);
+	//	printf("%d en cmd %d con pid %d\n", WEXITSTATUS(info->ex_stat), i, aux->pid);
+		aux = aux->next;
 		i++;
 	}
+	free_cmds(segmts); 
+//	free_exec_info(exec_info);
+	// si en algun momento estos frees intenta liberar algo sin malloc, tipo argv[i], da SEGFAULT
 	return (WEXITSTATUS(info->ex_stat));
 }
 
@@ -461,8 +467,6 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	}
 	printf("execution res: %d\n", executor(cmds, &info, exec_info));
-	free_cmds(cmds); 
 	free_exec_info(exec_info);
-	// si en algun momento estos frees intenta liberar algo sin malloc, tipo argv[i], da SEGFAULT
 	return (0);
 }
