@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 15:18:25 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/03 15:36:23 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:34:17 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,30 @@
 #include "struct.h"
 #include "libft/libft.h"
 
+int	find_slash(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	cmd_not_found(char *str)
 {
-	write(2, "Command not found: ", 19);
-	write(2, str, ft_strlen(str));
-	write(2, "\n", 1);
+	if (!find_slash(str))
+	{
+		write(2, str, ft_strlen(str));
+		write(2, ": command not found\n", 20);
+	}
+	else
+	{
+		write(2, str, ft_strlen(str));
+		write(2, ": No such file or directory\n", 28);
+	}
 }

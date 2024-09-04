@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/03 15:33:23 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:35:43 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ char	**create_empty_array(void);
 char	*find_path(char **paths, char **arr_cmd);
 char	*check_cmd_access(char **paths, char *cmd);
 void	cmd_not_found(char *str);
+int		find_slash(char *str);
 
 // EXECUTION
 int	heredoc(char *lim);

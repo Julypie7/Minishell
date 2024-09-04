@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/03 19:14:21 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:17:55 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,17 +304,17 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmds->env = env;
 	cmds->fd_in = -1;
 	cmds->fd_out = -1;
-//	cmds->redirs = NULL;
+	cmds->redirs = NULL;
 	cmds->indx = 1;
 	cmds->next = NULL;
 
-	cmds->redirs = malloc(sizeof(t_redir) * 1);
+/*	cmds->redirs = malloc(sizeof(t_redir) * 1);
 	if (!cmds->redirs)
 		return (NULL);
 	cmds->redirs->token = INPUT;
 	cmds->redirs->file_name = argv[4];
 	cmds->redirs->fd = -1;
-	cmds->redirs->next = NULL;
+	cmds->redirs->next = NULL;*/
 
 /*	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
@@ -336,7 +336,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 
 	tmp->next = tmp2;*/
 
-	cmd2 = malloc(sizeof(t_cmd) * 1);
+/*	cmd2 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd2)
 		return (NULL);
 	arr_cmd2 = malloc(sizeof(char *) * 2);
@@ -356,7 +356,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd2->indx = 2;
 	cmd2->next = NULL;
 
-	cmds->next = cmd2;
+	cmds->next = cmd2;*/
 
 /*	cmd3 = malloc(sizeof(t_cmd) * 1);
 	if (!cmd3)
@@ -441,7 +441,7 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 		dup2(exec_info->or_fd[0], 0);
 		dup2(exec_info->or_fd[1], 1);
 		free_cmds(segmts);
-		//free_exec_info(exec_info);
+		free_exec_info(exec_info);
 		return (WEXITSTATUS(info->ex_stat));
 	}
 	if (segmts)
@@ -454,7 +454,7 @@ int	executor(t_cmd *segmts, t_info *info, t_exec *exec_info)
 		i++;
 	}
 	free_cmds(segmts); 
-//	free_exec_info(exec_info);
+	free_exec_info(exec_info);
 	// si en algun momento estos frees intenta liberar algo sin malloc, tipo argv[i], da SEGFAULT
 	return (WEXITSTATUS(info->ex_stat));
 }
@@ -475,6 +475,5 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	}
 	printf("execution res: %d\n", executor(cmds, &info, exec_info));
-	free_exec_info(exec_info);
 	return (0);
 }
