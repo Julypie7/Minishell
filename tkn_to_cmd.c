@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex_to_cmd.c                                       :+:      :+:    :+:   */
+/*   tkn_to_cmd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 13:36:23 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/06 20:26:48 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/08 20:30:37 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,15 @@ t_cmd	*create_cmd_node(void)
 	cmd = malloc(sizeof(t_cmd) * 1);
 	if (!cmd)
 		return (NULL);
-	// array de comando (para luego)
 	cmd->arr_cmd = NULL;
-	// path del comando (para luego)
-	// lista de redirs (para luego)
+	cmd->path = NULL;
+	cmd->env = NULL;
+	cmd->pid = -1;
+	cmd->fd_in = -1;
+	cmd->fd_out = -1;
+	cmd->redirs = NULL;
+	cmd->indx = 1;
+	cmd->next = NULL;
 	return (cmd);
 }
 
@@ -39,18 +44,28 @@ int	add_redir(t_lex_lst *tokens, t_cmd *cmd)
 		if (!cmd->redirs)
 			return (2);
 		cmd->redirs->token = tokens->type;
-		cmd->redirs->file_name = tokens->next->word; // cuidado los frees
+		cmd->redirs->file_name = malloc(sizeof(char) * (ft_strlen(tokens->next->word) + 1)); // cuidado los frees
+		if (!cmd->redirs->file_name)
+			return (2);
+		ft_strlcpy(cmd->redirs->file_name, tokens->next->word, (ft_strlen(tokens->next->word) + 1));
+		cmd->redirs->fd = -1;
+		cmd->redirs->next = NULL;
 	}
 	else
 	{
 		tmp = cmd->redirs;
 		while (tmp->next)
 			tmp = tmp->next;
-		tmp->next =  malloc(sizeof(t_redir) * 1);
+		tmp->next = malloc(sizeof(t_redir) * 1);
 		if (!tmp->next)
 			return (2);
 		tmp->next->token = tokens->type;
-		tmp->next->file_name = tokens->next->word;
+		tmp->next->file_name = malloc(sizeof(char) * (ft_strlen(tokens->next->word) + 1));
+		if (!tmp->next->file_name)
+			return (2);
+		ft_strlcpy(tmp->next->file_name, tokens->next->word, (ft_strlen(tokens->next->word) + 1));
+		tmp->next->fd = -1;
+		tmp->next->next = NULL;
 	}
 	return (1);
 }
@@ -106,50 +121,42 @@ char	**add_to_array(char *word, char **arr_cmd)
 	return (new_array);
 }
 
-t_cmd	*lex_to_cmd(t_lex_lst *tokens)
+t_cmd	*tkn_to_cmd(t_lex_lst *tokens)
 {
 	t_cmd	*cmd;
-	t_lex_lst	*aux;
+	t_cmd	*aux_cmd;
 
-	aux = tokens;
 	cmd = create_cmd_node();
 	if (!cmd)
 		return (NULL);
+	aux_cmd = cmd;
 	while (tokens)
 	{
 		if (tokens->type == INPUT || tokens->type == OUTPUT || tokens->type == HEREDOC || tokens->type == APPEND)
 		{
-			add_redir(tokens, cmd);
+			if (add_redir(tokens, aux_cmd) == 2)
+			{
+				write(2, "add_redir failed\n", 17);
+				return (NULL);
+			}
 			tokens = tokens->next;
 		}
 		else if (tokens->word)
 		{
-			cmd->arr_cmd = add_to_array(tokens->word, cmd->arr_cmd);
-			if (!cmd->arr_cmd)
+			aux_cmd->arr_cmd = add_to_array(tokens->word, aux_cmd->arr_cmd);
+			if (!aux_cmd->arr_cmd)
 				return (NULL);
 		}
-	/*	else if (tokens->type == PIPE)
+		else if (tokens->type == PIPE)
 		{
-			// crear siguiente cmd
-			// conectarlo al next del anterior comando
-		}*/
+			aux_cmd->next = create_cmd_node();
+			if (!aux_cmd->next)
+				return (NULL);
+			aux_cmd = aux_cmd->next;
+		}
 		tokens = tokens->next;
 	}
 	return (cmd);
-}
-
-void	print_cmds(t_cmd *cmds)
-{
-	t_cmd	*aux;
-
-	aux = cmds;
-	while (aux)
-	{
-		printf("CMD[%p]\narr_cmd: %p\npath: %s\npid : %d\nfd_in: %d, fd_out: %d\nredirs: %p\nindex: %d\n\n", aux, aux->arr_cmd, aux->path, aux->pid, aux->fd_in, aux->fd_out, aux->redirs, aux->indx);
-		if (aux->arr_cmd)
-			printf("arr_cmd[0]: %s, arr_cmd[1]: %s, arr_cmd[2]: %s\n\n", aux->arr_cmd[0], aux->arr_cmd[1], aux->arr_cmd[2]);
-		aux = aux->next;
-	}
 }
 
 void	print_redirs_lst(t_redir *redirs)
@@ -159,8 +166,61 @@ void	print_redirs_lst(t_redir *redirs)
 	tmp = redirs;
 	while (tmp)
 	{
-		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\n\n", tmp, tmp->token, tmp->file_name, tmp->fd);
+		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\nnext: %p\n\n", tmp, tmp->token, tmp->file_name, tmp->fd, tmp->next);
 		tmp = tmp->next;
+	}
+}
+
+void	print_cmds(t_cmd *cmds)
+{
+	t_cmd	*aux;
+	int		i;
+
+	aux = cmds;
+	while (aux)
+	{
+		printf("CMD[%p]\narr_cmd: %p\npath: %s\npid : %d\nfd_in: %d, fd_out: %d\nredirs: %p\nindex: %d\nnext: %p\n", aux, aux->arr_cmd, aux->path, aux->pid, aux->fd_in, aux->fd_out, aux->redirs, aux->indx, aux->next);
+		i = 0;
+		while (aux->arr_cmd[i])
+		{
+			printf("arr_cmd[%d]: %s\n", i, aux->arr_cmd[i]);
+			i++;
+		}
+		print_redirs_lst(aux->redirs);
+		write(2, "\n", 1);
+		aux = aux->next;
+	}
+}
+
+void	free_redir_lst(t_redir *redirs)
+{
+	t_redir	*tmp;
+
+	tmp = redirs;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		free(redirs->file_name);
+		free(redirs);
+		redirs = tmp;
+	}
+}
+
+void	free_cmds(t_cmd *cmds)
+{
+	t_cmd	*tmp;
+
+	tmp = cmds;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		free_array(cmds->arr_cmd);
+	//	free(cmds->path);
+	//	free_array(env);
+		if (cmds->redirs)
+			free_redir_lst(cmds->redirs);
+		free(cmds);
+		cmds = tmp;
 	}
 }
 
@@ -173,17 +233,13 @@ int	main(void)
 	t_lex_lst	*tokens4;
 	t_lex_lst	*tokens5;
 	t_lex_lst	*tokens6;
+	t_lex_lst	*tokens7;
+	t_lex_lst	*tokens8;
+	t_lex_lst	*tokens9;
+	t_lex_lst	*tokens10;
+	t_lex_lst	*tokens11;
 
-	cmd = malloc(sizeof(t_cmd) * 1);
-	cmd->arr_cmd = NULL;
-	cmd->path = NULL;
-	cmd->env = NULL;
-	cmd->pid = -1;
-	cmd->fd_in = -1;
-	cmd->fd_out = -1;
-	cmd->redirs = NULL;
-	cmd->indx = 1;
-	cmd->next = NULL;
+	cmd = NULL;
 
 	tokens = malloc(sizeof(t_lex_lst) * 1);
 	if (!tokens)
@@ -243,14 +299,62 @@ int	main(void)
 
 	tokens5->next = tokens6;
 	
-//	print_lex_lst(tokens);
+	tokens7 = malloc(sizeof(t_lex_lst) * 1);
+	if (!tokens7)
+		return (1);
+	tokens7->word = NULL;
+	tokens7->type = PIPE;
+	tokens7->t_content = "|";
+	tokens7->next = NULL;
 
-//	add_redir(tokens, cmd);
+	tokens6->next = tokens7;
+
+	tokens8 = malloc(sizeof(t_lex_lst) * 1);
+	if (!tokens8)
+		return (1);
+	tokens8->word = "ls";
+	tokens8->type = -1;
+	tokens8->t_content = NULL;
+	tokens8->next = NULL;
+
+	tokens7->next = tokens8;
+
+	tokens9 = malloc(sizeof(t_lex_lst) * 1);
+	if (!tokens9)
+		return (1);
+	tokens9->word = NULL;
+	tokens9->type = OUTPUT;
+	tokens9->t_content = ">";
+	tokens9->next = NULL;
+
+	tokens8->next = tokens9;
+
+	tokens10 = malloc(sizeof(t_lex_lst) * 1);
+	if (!tokens10)
+		return (1);
+	tokens10->word = "out";
+	tokens10->type = -1;
+	tokens10->t_content = NULL;
+	tokens10->next = NULL;
+
+	tokens9->next = tokens10;
+
+	tokens11 = malloc(sizeof(t_lex_lst) * 1);
+	if (!tokens11)
+		return (1);
+	tokens11->word = "-a";
+	tokens11->type = -1;
+	tokens11->t_content = NULL;
+	tokens11->next = NULL;
+
+	tokens10->next = tokens11;
+
+	print_lex_lst(tokens);
 	
+	cmd = tkn_to_cmd(tokens);
 	print_cmds(cmd);
-	cmd = lex_to_cmd(tokens);
-	print_cmds(cmd);
-	print_redirs_lst(cmd->redirs);
+	free_lexlst(tokens);
+	free_cmds(cmd);
 	return (0);
 }
 
