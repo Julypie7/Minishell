@@ -6,7 +6,7 @@
 /*   By: martalop <martalop@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 23:33:06 by martalop          #+#    #+#             */
-/*   Updated: 2024/05/21 13:28:57 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/08 16:57:29 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,19 @@
 void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
 	t_list	*current;
+	t_list	*tmp;
 
-	current = *lst;
 	if (!*lst)
+		return ;
+	current = *lst;
+	while (current != NULL)
 	{
-		del(lst);
-		lst = NULL;
-	}
-	else
-	{
-		while (current->next != NULL)
-		{
-			del(current->content);
-			current = current->next;
-		}
+		tmp = current->next;
 		del(current->content);
 		free(current);
-		*lst = NULL;
+		current = tmp;
 	}
+	*lst = NULL;
 }
 
 /*int	main()

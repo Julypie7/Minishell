@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/19 14:07:34 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:01:33 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 // initial functions
 int		start_reading(t_info *info);
 void	init_struct(t_info *info, char **env);
-int		main(int argc, char **argv, char **env);
+//int		main(int argc, char **argv, char **env);
 
 //creating env copy
 void	print_env(t_envp *lst);

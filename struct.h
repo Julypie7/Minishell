@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/21 17:44:33 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:00:34 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ typedef struct s_cmd
  	char	*path;
  	char	**env;
 	int		pid;
-//	int		fd_in; // para las redirs de input
-//	int		fd_out; // para las redirs de output
+	int		fd_in; // para las redirs de input
+	int		fd_out; // para las redirs de output
 //(se van actualizando prq los voy sobreescribiendo)
 	t_redir	*redirs;
 	int		indx; // cuál comando es
