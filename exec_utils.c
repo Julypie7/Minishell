@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:39:55 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/09 16:47:19 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 16:50:48 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	print_redirs_lst(t_redir *redirs)
 	tmp = redirs;
 	while (tmp)
 	{
-		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\n\n", tmp, tmp->token, tmp->file_name, tmp->fd);
+		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\nnext: %p\n\n", tmp, tmp->token, tmp->file_name, tmp->fd, tmp->next);
 		tmp = tmp->next;
 	}
 }
