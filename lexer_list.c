@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 14:32:50 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/21 17:21:03 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 15:09:17 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_lex_lst	*new_node(char *str, char *token, t_info *info)
 		if (token[0] == '|')
 			new_node->type = PIPE;
 	}
+	else
+		new_node->type = 0;
 	new_node->t_content = token;
 //	new_node->elem = i++;
 	new_node->next = NULL;

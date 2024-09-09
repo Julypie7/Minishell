@@ -6,7 +6,7 @@
 /*   By: martalop <martalop@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 17:23:38 by martalop          #+#    #+#             */
-/*   Updated: 2024/05/21 13:31:14 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/08 16:59:34 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,15 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 {
 	t_list	*tmp;
 
-	if (!(*lst))
+	if (!*lst)
 	{
-		(*lst) = new;
+		*lst = new;
+		return ;
 	}
-	else
-	{
-		tmp = (*lst);
-		while (tmp->next != NULL)
-		{
-			tmp = tmp->next;
-		}
-		tmp->next = new;
-	}
+	tmp = (*lst);
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+	tmp->next = new;
 }
 
 /*int	main()
