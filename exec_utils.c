@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:39:55 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/02 20:46:49 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 16:47:19 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,18 +52,6 @@ void	free_cmds(t_cmd *cmds)
 	}
 }
 
-void	print_cmds(t_cmd *cmds)
-{
-	t_cmd	*aux;
-
-	aux = cmds;
-	while (aux)
-	{
-		printf("CMD[%p]\narr_cmd[0]: %s, arr_cmd[1]: %s\npath: %s\npid : %d\nfd_in: %d, fd_out: %d\nredirs: %p\nindex: %d\n\n", aux, aux->arr_cmd[0], aux->arr_cmd[1], aux->path, aux->pid, aux->fd_in, aux->fd_out, aux->redirs, aux->indx);
-		aux = aux->next;
-	}
-}
-
 void	print_redirs_lst(t_redir *redirs)
 {
 	t_redir	*tmp;
@@ -76,3 +64,23 @@ void	print_redirs_lst(t_redir *redirs)
 	}
 }
 
+void	print_cmds(t_cmd *cmds)
+{
+	t_cmd	*aux;
+	int		i;
+
+	aux = cmds;
+	while (aux)
+	{
+		printf("CMD[%p]\narr_cmd: %p\npath: %s\npid : %d\nfd_in: %d, fd_out: %d\nredirs: %p\nindex: %d\nnext: %p\n", aux, aux->arr_cmd, aux->path, aux->pid, aux->fd_in, aux->fd_out, aux->redirs, aux->indx, aux->next);
+		i = 0;
+		while (aux->arr_cmd[i])
+		{
+			printf("arr_cmd[%d]: %s\n", i, aux->arr_cmd[i]);
+			i++;
+		}
+		print_redirs_lst(aux->redirs);
+		write(2, "\n", 1);
+		aux = aux->next;
+	}
+}
