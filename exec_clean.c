@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/04 15:17:55 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 18:12:39 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	open_redir_m(t_cmd *cmd)
 
 int	redirect_m(t_cmd *cmd)
 {
-//	fprintf(stderr, "inx: %d\nfd_in: %d\nfd_out: %d\n", cmd->indx, cmd->fd_in, cmd->fd_out);
+//	dprintf(2, "inx: %d\nfd_in: %d\nfd_out: %d\n", cmd->indx, cmd->fd_in, cmd->fd_out);
 	if (cmd->fd_in != -1)
 	{
 		if (dup2(cmd->fd_in, 0) == -1)
