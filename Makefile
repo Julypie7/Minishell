@@ -1,18 +1,6 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/07/18 13:04:12 by ineimatu          #+#    #+#              #
-#    Updated: 2024/08/21 17:19:23 by martalop         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = minishell
 
-SRC = main.c env_utils.c env_utils2.c lexer_quots.c lexer.c token.c lexer_list.c
+SRC = main.c env_utils.c env_utils2.c lexer_quots.c lexer.c token.c lexer_list.c err_messags.c exec_clean.c exec_utils.c pipex_utils.c redir2.c syntax_err.c tkn_to_cmd.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -20,7 +8,7 @@ CC = cc
 
 RFLAG = -lreadline
 
-CFLAGS = -Wall -Werror -Wextra -fsanitize=address
+CFLAGS = -fsanitize=address #-Wall -Werror -Wextra
 
 LIBFT_A = libft/libft.a
 
@@ -32,7 +20,7 @@ makelibft:
 $(NAME): $(LIBFT_A) $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -L./libft -lft $(RFLAG)
 
-%.o:%.c Makefile minishell.h lexer.h struct.h
+%.o:%.c Makefile minishell.h lexer.h struct.h execution.h parsing.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

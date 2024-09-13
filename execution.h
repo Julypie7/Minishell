@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/09 17:00:36 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/12 22:05:44 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int		find_heredocs(t_cmd *cmds);
 int		open_redir(t_redir *redirs);
 int		redirect(t_redir *redirs);
 int		count_cmds(char *rl);
+int		executor(t_cmd *segmts, t_info *info);
 int		exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info);
 int		exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info);
 void	print_cmds(t_cmd *cmds);

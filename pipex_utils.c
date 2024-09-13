@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 19:51:30 by martalop          #+#    #+#             */
-/*   Updated: 2024/08/13 16:19:27 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 20:45:22 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*find_path(char **paths, char **arr_cmd)
 	char	*tmp;
 
 	x = 0;
-	if (arr_cmd[0] == NULL)
+	if (!arr_cmd || arr_cmd[0] == NULL)
 	{
 		tmp = ft_strdup("");
 		return (tmp);

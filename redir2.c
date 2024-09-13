@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/02 20:47:19 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/13 13:53:43 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ int	open_redir(t_redir *redirs)
 {
 	while (redirs)
 	{
-//		fprintf(stderr, "%d\n", redirs->token);
-		if (redirs->token == INPUT)
+//		fprintf(stderr, "%d\n", redirs->type);
+		if (redirs->type == INPUT)
 		{
 		//	write(2, "open con input\n", 15); 
 			redirs->fd = open(redirs->file_name, O_RDONLY);
@@ -69,7 +69,7 @@ int	open_redir(t_redir *redirs)
 				return (1);
 			}
 		}
-/*		else if (redirs->token == HEREDOC)
+/*		else if (redirs->type == HEREDOC)
 		{
 		//	write(2, "open con heredoc\n", 17); 
 			redirs->fd = heredoc(redirs->file_name); // heredoc devuelve el fd de lectura de la pipe del documento heredoc
@@ -77,7 +77,7 @@ int	open_redir(t_redir *redirs)
 			if (redirs->fd == -1)
 				return (1);
 		}*/
-		else if (redirs->token == APPEND)
+		else if (redirs->type == APPEND)
 		{
 		//	write(2, "open con append\n", 16);
 			redirs->fd = open(redirs->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
@@ -87,7 +87,7 @@ int	open_redir(t_redir *redirs)
 				return (1);
 			}
 		}
-		else if (redirs->token == OUTPUT)
+		else if (redirs->type == OUTPUT)
 		{
 		//	write(2, "open con output\n", 16);
 			redirs->fd = open(redirs->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -106,7 +106,7 @@ int	redirect(t_redir *redirs)
 {
 	while (redirs)
 	{
-		if (redirs->token == INPUT || redirs->token == HEREDOC)
+		if (redirs->type == INPUT || redirs->type == HEREDOC)
 		{
 			if (dup2(redirs->fd, 0) == -1)
 			{
@@ -114,7 +114,7 @@ int	redirect(t_redir *redirs)
 				return (1);
 			}
 		}
-		else if (redirs->token == OUTPUT || redirs->token == APPEND)
+		else if (redirs->type == OUTPUT || redirs->type == APPEND)
 		{
 			if (dup2(redirs->fd, 1) == -1)
 			{
@@ -158,8 +158,9 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 		return (write(2, "problem splitting paths\n", 24), NULL);
 	exec_info->or_fd[0] = dup(0);
 	exec_info->or_fd[1] = dup(1);
+	exec_info->env = env;
 //	exec_info->cmd_num = count_cmds(info->rl);
-	exec_info->cmd_num = 1;
+//	exec_info->cmd_num = 1;
 	cmd = malloc(sizeof(t_cmd) * 1);
 	if (!cmd)
 		return (NULL);
@@ -171,7 +172,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 	cmd->path = find_path(exec_info->paths, cmd->arr_cmd);
 	if (!cmd->path)
 		return (write(2, "problem finfing path\n", 21), NULL);
-	cmd->env = env;
+//	cmd->env = env;
 //	cmd->env = envlst_to_arr() -> tendre que hacer esto prq en la struct info me llega como lista
 	cmd->pid = 0;
 
@@ -179,7 +180,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 	cmd->redirs = malloc(sizeof(t_redir) * 1);
 	if (!cmd->redirs)
 		return (NULL);
-	cmd->redirs->token = INPUT;
+	cmd->redirs->type = INPUT;
 	cmd->redirs->file_name = argv[2];
 	cmd->redirs->fd = -1;
 	cmd->redirs->next = NULL;
@@ -187,7 +188,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 	tmp = malloc(sizeof(t_redir) * 1);
 	if (!tmp)
 		return (NULL);
-	tmp->token = HEREDOC;
+	tmp->type = HEREDOC;
 	tmp->file_name = argv[4];
 	tmp->fd = -1;
 	tmp->next = NULL;
@@ -197,7 +198,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 	tmp2 = malloc(sizeof(t_redir) * 1);
 	if (!tmp2)
 		return (NULL);
-	tmp2->token = APPEND;
+	tmp2->type = APPEND;
 	tmp2->file_name = argv[7];
 	tmp2->fd = -1;
 	tmp2->next = NULL;
@@ -207,7 +208,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 	tmp3 = malloc(sizeof(t_redir) * 1);
 	if (!tmp3)
 		return (NULL);
-	tmp3->token = OUTPUT;
+	tmp3->type = OUTPUT;
 	tmp3->file_name = argv[9];
 	tmp3->fd = -1;
 	tmp3->next = NULL;
@@ -238,13 +239,13 @@ void	remove_fds(t_redir *redirs)
 	tmp = redirs;
 	while (tmp)
 	{
-		if (tmp && (tmp->token == INPUT || tmp->token == HEREDOC) && i < 2 - 1)
+		if (tmp && (tmp->type == INPUT || tmp->type == HEREDOC) && i < 2 - 1)
 		{
 			write(2, "close de input fd\n", 18);
 			close(tmp->fd);
 			i++;
 		}
-		else if (tmp->token == OUTPUT && j < 1 - 1)
+		else if (tmp->type == OUTPUT && j < 1 - 1)
 		{
 			write(2, "close de output fd\n", 19);
 			close(tmp->fd);
@@ -254,7 +255,7 @@ void	remove_fds(t_redir *redirs)
 	}
 }
 
-int	execute(t_cmd *cmd, t_info *info)
+int	execute(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
 	cmd->pid = fork();
 	if (cmd->pid == -1)
@@ -266,7 +267,7 @@ int	execute(t_cmd *cmd, t_info *info)
 //		remove_fds(cmd->redirs);
 		redirect(cmd->redirs);
 
-		if (execve(cmd->path, cmd->arr_cmd, cmd->env) == -1)
+		if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
 		{
 			write(2, "execve failed\n", 14);
 			info->ex_stat = 1;
@@ -291,7 +292,7 @@ int	execute(t_cmd *cmd, t_info *info)
 	if (!cmd)
 		return (1);
 //	print_redirs_lst(cmd->redirs);
-	if (execute(cmd, &info) == 1)
+	if (execute(cmd, &info, &exec_info) == 1)
 		return (1);
 	waitpid(cmd->pid, &(info.ex_stat), 0);
 	return (WEXITSTATUS(info.ex_stat));

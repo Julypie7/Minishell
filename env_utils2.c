@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_list_utils2.c                                  :+:      :+:    :+:   */
+/*   env_utils2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 21:51:04 by martalop          #+#    #+#             */
-/*   Updated: 2024/07/22 21:51:51 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 20:47:02 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,12 @@ void	free_envlst(t_envp *envp)
 	}
 }
 
-char	**free_array(char **array)
+char	**free_array(char **array) // CAMBIAR A RETURN VOID
 {
 	int	i;
 
+	if (!array)
+		return (NULL);
 	i = 0;
 	while (array[i])
 	{

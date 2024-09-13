@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 20:16:53 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/05 22:38:09 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/11 17:38:29 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	simple_syntax(t_lex_lst *tokens)
 				write(2, "syntax error near unexpected token\n", 35);
 				return (1);
 			}
-			if (!tkn->next || !tkn->next->word || !tkn->next->word[0])
+			if (!tkn->next || (tkn->type != PIPE && (!tkn->next->word || !tkn->next->word[0])))
 			{
 				write(2, "syntax error near unexpected token\n", 35);
 				return (1);

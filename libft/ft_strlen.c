@@ -6,7 +6,7 @@
 /*   By: martalop <martalop@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 11:11:35 by martalop          #+#    #+#             */
-/*   Updated: 2024/01/23 14:38:10 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/09 20:07:38 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	indx;
 
+	if (!s)
+		return (0);
 	indx = 0;
 	while (s[indx] != '\0')
 		indx++;
