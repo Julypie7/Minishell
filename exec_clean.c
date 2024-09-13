@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/13 16:10:03 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:02:27 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ int	open_redir_m(t_cmd *cmd)
 
 int	redirect_m(t_cmd *cmd)
 {
-//	dprintf(2, "inx: %d\nfd_in: %d\nfd_out: %d\n", cmd->indx, cmd->fd_in, cmd->fd_out);
+//	dprintf(2, "fd_in: %d\nfd_out: %d\n", cmd->fd_in, cmd->fd_out);
 	if (cmd->fd_in != -1)
 	{
 		if (dup2(cmd->fd_in, 0) == -1)
@@ -332,7 +332,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmds->fd_in = -1;
 	cmds->fd_out = -1;
 	cmds->redirs = NULL;
-	cmds->indx = 1;
+//	cmds->indx = 1;
 	cmds->next = NULL;
 
 /*	cmds->redirs = malloc(sizeof(t_redir) * 1);
@@ -380,7 +380,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd2->fd_in = -1;
 	cmd2->fd_out = -1;
 	cmd2->redirs = NULL;
-	cmd2->indx = 2;
+	//cmd2->indx = 2;
 	cmd2->next = NULL;
 
 	cmds->next = cmd2;*/
@@ -402,7 +402,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd3->fd_in = -1;
 	cmd3->fd_out = -1;
 	cmd3->redirs = NULL;
-	cmd3->indx = 3;
+	//cmd3->indx = 3;
 	cmd3->next = NULL;
 
 	cmd2->next = cmd3;*/
@@ -424,7 +424,7 @@ t_cmd	*hardcore_commands(char **argv, char **env, char **paths)
 	cmd4->fd_in = -1;
 	cmd4->fd_out = -1;
 	cmd4->redirs = NULL;
-	cmd4->indx = 4;
+	//cmd4->indx = 4;
 	cmd4->next = NULL;*/
 
 /*	cmd4->redirs = malloc(sizeof(t_redir) * 1);

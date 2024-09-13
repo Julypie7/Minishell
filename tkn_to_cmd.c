@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 13:36:23 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/12 23:11:00 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:03:14 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_cmd	*create_cmd_node(void)
 	cmd->fd_in = -1;
 	cmd->fd_out = -1;
 	cmd->redirs = NULL;
-	cmd->indx = 1;
+	//cmd->indx = 1;
 	cmd->next = NULL;
 	return (cmd);
 }

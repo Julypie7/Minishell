@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 15:15:37 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/13 13:53:43 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/13 17:02:51 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ t_cmd	*set_cmd(char **argv, char **env, t_info *info, t_exec *exec_info)
 
 	tmp2->next = tmp3;
 
-	cmd->indx = 1;
+//	cmd->indx = 1;
 	cmd->next = NULL;
 	return (cmd);
 }
