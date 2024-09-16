@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/09 18:48:24 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:23:32 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 // initial functions
 int		start_reading(t_info *info);
-void	init_struct(t_info *info, char **env);
+int		init_struct(t_info *info, char **env);
 //int		main(int argc, char **argv, char **env);
 
 //creating env copy
@@ -36,7 +36,7 @@ void	free_envlst(t_envp *envp);
 
 void	add_node_to_env(t_envp **lst, t_envp *node);
 int		find_equal(char *str);
-void	env_to_list(t_info *info, char **env);
+t_envp	*env_to_list(char **env);
 char	**envlst_to_arr(t_envp *envp);
 
 #endif

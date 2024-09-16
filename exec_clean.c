@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/13 17:02:27 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/14 20:40:44 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ int	open_redir_m(t_cmd *cmd)
 	{
 		if (tmp->type == INPUT)
 		{
-			close(cmd->fd_in);
-//			write(2, "open con input\n", 15);
+			if (cmd->fd_in != -1)
+				close(cmd->fd_in);
 			cmd->fd_in = open(tmp->file_name, O_RDONLY);
 			if (cmd->fd_in == -1)
 			{
@@ -93,8 +93,8 @@ int	open_redir_m(t_cmd *cmd)
 		}
 		else if (tmp->type == APPEND)
 		{
-			close(cmd->fd_out);
-//			write(2, "open con append\n", 16);
+			if (cmd->fd_out != -1)
+				close(cmd->fd_out);
 			cmd->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
 			if (cmd->fd_out == -1)
 			{
@@ -104,8 +104,8 @@ int	open_redir_m(t_cmd *cmd)
 		}
 		else if (tmp->type == OUTPUT)
 		{
-//			write(2, "open con output\n", 16);
-			close(cmd->fd_out);
+			if (cmd->fd_out != -1)
+				close(cmd->fd_out);
 			cmd->fd_out = open(tmp->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (cmd->fd_out == -1)
 			{
@@ -115,7 +115,8 @@ int	open_redir_m(t_cmd *cmd)
 		}
 		else if (tmp->type == HEREDOC)
 		{
-			close(cmd->fd_in);
+			if (cmd->fd_in != -1)
+				close(cmd->fd_in);
 			cmd->fd_in = tmp->fd;
 			tmp->fd = -1;
 			if (cmd->fd_in == -1)
@@ -131,7 +132,6 @@ int	open_redir_m(t_cmd *cmd)
 
 int	redirect_m(t_cmd *cmd)
 {
-//	dprintf(2, "fd_in: %d\nfd_out: %d\n", cmd->fd_in, cmd->fd_out);
 	if (cmd->fd_in != -1)
 	{
 		if (dup2(cmd->fd_in, 0) == -1)
@@ -139,8 +139,8 @@ int	redirect_m(t_cmd *cmd)
 			write(2, "dup2 in failed\n", 15);
 			return (1);
 		}
-	//	write(2, "paso por dup2 de in\n", 20);
-		close(cmd->fd_in);
+		if (cmd->fd_in != -1)
+			close(cmd->fd_in);
 	}
 	if (cmd->fd_out != -1)
 	{
@@ -149,8 +149,8 @@ int	redirect_m(t_cmd *cmd)
 			write(2, "dup2 out failed\n", 16);
 			return (1);
 		}
-	//	write(2, "paso por dup2 de out\n", 21);
-		close(cmd->fd_out);
+		if (cmd->fd_out != -1)
+			close(cmd->fd_out);
 	}
 	return (0);
 }
@@ -204,7 +204,7 @@ int	exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info)
 			if (!cmd->arr_cmd)
 				exit(0);
 			if (!find_cmd_type(cmd->arr_cmd[0]))
-				exec_builtin(cmd->arr_cmd);
+				return(exec_builtin(cmd->arr_cmd));
 			if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
 			{
 				cmd_not_found(cmd->path);
@@ -241,7 +241,15 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 	if (cmd->pid == 0)
 	{
 		if (open_redir_m(cmd) == 1)
+		{
+			free_cmds(cmd);
+			free_envlst(info->envp);
+			free_exec_info(exec_info);
+	//		clear_history();
+	//		rl_clear_display();
+			free(info->rl);
 			exit(1); // ??
+		}
 		if (!cmd->arr_cmd)
 			exit(0);
 		if (redirect_m(cmd) == 1)
@@ -249,6 +257,11 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 		if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
 		{
 			cmd_not_found(cmd->path);
+			free_cmds(cmd);
+			free_envlst(info->envp);
+			free_exec_info(exec_info);
+			clear_history();
+			free(info->rl);
 			exit(127);
 		}
 	}

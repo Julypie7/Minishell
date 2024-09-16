@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 14:25:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/07/22 21:56:04 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:24:33 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,22 @@ int	find_equal(char *str)
 	return (i);
 }
 
-void	env_to_list(t_info *info, char **env)
+t_envp	*env_to_list(char **env)
 {
 	int		found_at;
 	int			i;
 	t_envp		*node;
+	t_envp		*env_lst;
 
 	i = 0;
+	env_lst = NULL;
 	while (env[i])
 	{
 		node = malloc(sizeof(t_envp) * 1);
 		if (!node)
 		{
 			write(2, "malloc error at env copy creation\n", 34);
-			free_envlst(info->envp);
+			free_envlst(env_lst);
 			exit(1);
 		}
 		// variable name
@@ -67,7 +69,7 @@ void	env_to_list(t_info *info, char **env)
 		node->key = ft_substr(env[i], 0, found_at + 1);
 		if (!node->key)
 		{
-			free_envlst(info->envp);
+			free_envlst(env_lst);
 			exit (1);
 		}
 		// content of variable
@@ -75,13 +77,14 @@ void	env_to_list(t_info *info, char **env)
 		if (!node->value)
 		{
 			free(node->key);
-			free_envlst(info->envp);
+			free_envlst(env_lst);
 			exit (1);
 		}
 		node->next = NULL;
-		add_node_to_env(&info->envp, node);
+		add_node_to_env(&env_lst, node);
 		i++;
 	}
+	return (env_lst);
 }
 char	**envlst_to_arr(t_envp *envp)
 {
@@ -115,11 +118,9 @@ char	**envlst_to_arr(t_envp *envp)
 void	add_node_to_env(t_envp **lst, t_envp *node)
 {
 	t_envp	*tmp;
-
-	if(!(*lst))
-	{
+	
+	if (!(*lst))
 		(*lst) = node;
-	}
 	else
 	{
 		tmp = (*lst);

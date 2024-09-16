@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/13 16:11:39 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/16 16:40:12 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,16 @@
 #include "parsing.h"
 #include "execution.h"
 
-void	init_struct(t_info *info, char **env)
+int	init_struct(t_info *info, char **env)
 {
-//	char	**arr;
-
 	info->rl = NULL;
 	info->ex_stat = 0;
-	info->envp = NULL;
+	info->envp = env_to_list(env);
+	if (!info->envp)
+		return (1);
+	info->copy = NULL;
 	info->tokens = NULL;
-	env_to_list(info, env);
-//	print_env(info->envp);
-//	arr = envlst_to_arr(info->envp);
-//	print_char_arr(arr);
-//	free_array(arr);
+	return (0);
 }
 /*
 int	do_shell(char *line, t_info *info)
@@ -64,7 +61,7 @@ int	start_reading(t_info *info)
 //		info->exit = do_shell(info->rl, info);
 		if (!lexer(info))
 			exit (0);
-		print_lex_lst(info->tokens);
+//		print_lex_lst(info->tokens);
 		if (simple_syntax(info->tokens) == 1)
 		{
 			free(info->rl);
@@ -75,16 +72,16 @@ int	start_reading(t_info *info)
 			continue;
 		}
 		cmds = tkn_to_cmd(info->tokens);
-		print_cmds(cmds);
+//		print_cmds(cmds);
 		free_lexlst(info->tokens);
 		info->ex_stat = executor(cmds, info);
 		printf("exit status: %d\n", info->ex_stat);
 		free_cmds(cmds);
 		info->tokens = NULL;
+//		rl_clear_history(info->rl);
 		free(info->rl);
 		i++;
 	}
-	//rl_clear_history();
 	return (1);
 }
 
@@ -98,7 +95,8 @@ int	main(int argc, char **argv, char **env)
 		printf("This program does not accept arguments\n");
 		exit(1);
 	}
-	init_struct(&info, env);
+	if (init_struct(&info, env) == 1)
+		return (-1);
 	if (start_reading(&info))
 	{
 		free_envlst(info.envp);

@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/13 16:11:30 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/16 16:29:14 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ typedef	struct s_info
 	t_lex_lst	*tokens;
 	int	ex_stat;
 	t_envp	*envp;
+	t_envp	*copy;
 } t_info;
 
 #endif
