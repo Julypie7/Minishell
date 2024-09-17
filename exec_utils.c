@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/01 20:39:55 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/13 16:12:25 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/17 18:22:53 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	free_exec_info(t_exec *exec_info)
 {
 	free_array(exec_info->paths);
 	free_array(exec_info->env);
-//	free(exec_info);
 }
 
 void	free_redir_lst(t_redir *redirs)
@@ -45,7 +44,6 @@ void	free_cmds(t_cmd *cmds)
 		tmp = tmp->next;
 		free_array(cmds->arr_cmd);
 		free(cmds->path);
-	//	free_array(env);
 		if (cmds->redirs)
 			free_redir_lst(cmds->redirs);
 		free(cmds);
@@ -60,7 +58,8 @@ void	print_redirs_lst(t_redir *redirs)
 	tmp = redirs;
 	while (tmp)
 	{
-		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\nnext: %p\n\n", tmp, tmp->type, tmp->file_name, tmp->fd, tmp->next);
+		printf("redir[%p]\ntoken: %d\nfile_name: %s\nfd: %d\nnext: %p\n\n",
+			tmp, tmp->type, tmp->file_name, tmp->fd, tmp->next);
 		tmp = tmp->next;
 	}
 }
@@ -73,8 +72,11 @@ void	print_cmds(t_cmd *cmds)
 	aux = cmds;
 	while (aux)
 	{
-		printf("CMD[%p]\narr_cmd: %p\npath: %s\npid : %d\nfd_in: %d, fd_out: %d\nredirs: %p\nnext: %p\n", aux, aux->arr_cmd, aux->path, aux->pid, aux->fd_in, aux->fd_out, aux->redirs, aux->next);
+		printf("CMD[%p]\narr_cmd: %p\npath: %s\npid : %d\n", aux,
+			aux->arr_cmd, aux->path, aux->pid);
 		i = 0;
+		printf("fd_in: %d, fd_out: %d\nredirs: %p\nnext: %p\n", aux->fd_in,
+			aux->fd_out, aux->redirs, aux->next);
 		while (aux->arr_cmd && aux->arr_cmd[i])
 		{
 			printf("arr_cmd[%d]: %s\n", i, aux->arr_cmd[i]);

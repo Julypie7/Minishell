@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 14:25:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/13 18:24:33 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/17 20:23:41 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,44 +48,29 @@ int	find_equal(char *str)
 
 t_envp	*env_to_list(char **env)
 {
-	int		found_at;
-	int			i;
-	t_envp		*node;
-	t_envp		*env_lst;
+	int		i;
+	t_envp	*node;
+	t_envp	*env_lst;
 
 	i = 0;
 	env_lst = NULL;
-	while (env[i])
+	while (env && env[i])
 	{
 		node = malloc(sizeof(t_envp) * 1);
 		if (!node)
 		{
 			write(2, "malloc error at env copy creation\n", 34);
 			free_envlst(env_lst);
-			exit(1);
+			return (NULL);
 		}
-		// variable name
-		found_at = find_equal(env[i]);
-		node->key = ft_substr(env[i], 0, found_at + 1);
-		if (!node->key)
-		{
-			free_envlst(env_lst);
-			exit (1);
-		}
-		// content of variable
-		node->value = ft_substr(env[i], found_at + 1, ft_strlen(env[i]) - found_at);
-		if (!node->value)
-		{
-			free(node->key);
-			free_envlst(env_lst);
-			exit (1);
-		}
-		node->next = NULL;
+		if (fill_env_node(env[i], node, &env_lst) == 1)
+			return (NULL);
 		add_node_to_env(&env_lst, node);
 		i++;
 	}
 	return (env_lst);
 }
+
 char	**envlst_to_arr(t_envp *envp)
 {
 	int		i;
@@ -105,7 +90,7 @@ char	**envlst_to_arr(t_envp *envp)
 		val_len = ft_strlen(tmp->value);
 		arr[i] = malloc(sizeof(char) * (key_len + val_len + 1));
 		if (!arr[i])
-			return (free_array(arr));
+			return (free_array(arr), NULL);
 		ft_strlcpy(arr[i], tmp->key, (key_len + 1));
 		ft_strlcpy(&arr[i][key_len], tmp->value, (val_len + 1));
 		i++;
@@ -118,7 +103,7 @@ char	**envlst_to_arr(t_envp *envp)
 void	add_node_to_env(t_envp **lst, t_envp *node)
 {
 	t_envp	*tmp;
-	
+
 	if (!(*lst))
 		(*lst) = node;
 	else
