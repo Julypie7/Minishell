@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 20:16:53 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/11 17:38:29 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/17 16:59:16 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,43 @@
 #include "struct.h"
 #include "parsing.h"
 
+int	handle_tkn_syntax(t_lex_lst *tokens, int *here_count, int *word)
+{
+	if (tokens->type == PIPE && *word == 0)
+	{
+		write(2, "syntax error near unexpected token\n", 35);
+		return (1);
+	}
+	if (!tokens->next || (tokens->type != PIPE && (!tokens->next->word
+				|| !tokens->next->word[0])))
+	{
+		write(2, "syntax error near unexpected token\n", 35);
+		return (1);
+	}
+	if (tokens->type == HEREDOC)
+		*here_count = *here_count + 1;
+	return (0);
+}
+
 int	simple_syntax(t_lex_lst *tokens)
 {
-	t_lex_lst	*tkn;
-	int			i;
-	int			word;
+	int	here_count;
+	int	word;
 
-	i = 0;
+	here_count = 0;
 	word = 0;
-	tkn = tokens;
-	while (tkn)
+	while (tokens)
 	{
-		if (!tkn->word)
+		if (!tokens->word)
 		{
-			if (tkn->type == PIPE && word == 0)
-			{
-				write(2, "syntax error near unexpected token\n", 35);
+			if (handle_tkn_syntax(tokens, &here_count, &word) == 1)
 				return (1);
-			}
-			if (!tkn->next || (tkn->type != PIPE && (!tkn->next->word || !tkn->next->word[0])))
-			{
-				write(2, "syntax error near unexpected token\n", 35);
-				return (1);
-			}
-			i++;
 		}
 		else
 			word = 1;
-		tkn = tkn->next;
+		tokens = tokens->next;
 	}
-	if (i > 16)
+	if (here_count > 16)
 	{
 		write(2, "maximum heredoc limit exceeded(16)\n", 35);
 		return (1);
