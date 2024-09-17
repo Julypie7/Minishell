@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 13:36:23 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/13 17:03:14 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/17 14:35:08 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,48 +24,25 @@ t_cmd	*create_cmd_node(void)
 		return (NULL);
 	cmd->arr_cmd = NULL;
 	cmd->path = NULL;
-//	cmd->env = NULL; // sustituir esto por el env
 	cmd->pid = -1;
 	cmd->fd_in = -1;
 	cmd->fd_out = -1;
 	cmd->redirs = NULL;
-	//cmd->indx = 1;
 	cmd->next = NULL;
 	return (cmd);
 }
 
 int	add_redir(t_lex_lst *tokens, t_cmd *cmd)
 {
-	t_redir	*tmp;
-
 	if (!cmd->redirs)
-	{	
-		cmd->redirs = malloc(sizeof(t_redir) * 1);
-		if (!cmd->redirs)
+	{
+		if (!add_first_rdir(tokens, cmd))
 			return (2);
-		cmd->redirs->type = tokens->type;
-		cmd->redirs->file_name = malloc(sizeof(char) * (ft_strlen(tokens->next->word) + 1)); // cuidado los frees
-		if (!cmd->redirs->file_name)
-			return (2);
-		ft_strlcpy(cmd->redirs->file_name, tokens->next->word, (ft_strlen(tokens->next->word) + 1));
-		cmd->redirs->fd = -1;
-		cmd->redirs->next = NULL;
 	}
 	else
 	{
-		tmp = cmd->redirs;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = malloc(sizeof(t_redir) * 1);
-		if (!tmp->next)
+		if (!add_rest_rdirs(tokens, cmd))
 			return (2);
-		tmp->next->type = tokens->type;
-		tmp->next->file_name = malloc(sizeof(char) * (ft_strlen(tokens->next->word) + 1));
-		if (!tmp->next->file_name)
-			return (2);
-		ft_strlcpy(tmp->next->file_name, tokens->next->word, (ft_strlen(tokens->next->word) + 1));
-		tmp->next->fd = -1;
-		tmp->next->next = NULL;
 	}
 	return (1);
 }
@@ -82,41 +59,27 @@ int	find_arr_size(char **array)
 
 char	**add_to_array(char *word, char **arr_cmd)
 {
-	int	i;
+	int		i;
 	char	**new_array;
 
 	i = 0;
+	new_array = NULL;
 	if (!arr_cmd)
-	{
-		arr_cmd = malloc(sizeof(char *) * 2);
-		if (!arr_cmd)
-			return (NULL);
-		arr_cmd[0] = malloc(sizeof(char) * (ft_strlen(word) + 1));
-		if (!arr_cmd[0])
-			return (NULL);
-		ft_strlcpy(arr_cmd[0], word, (ft_strlen(word) + 1));
-	//	free(word); // si luego libero todos los lex_lst tokens esto me daria doble free?
-		arr_cmd[1] = NULL;
-		return (arr_cmd);
-	}
+		return (create_arr_cmd(word, arr_cmd));
 	new_array = malloc(sizeof(char *) * (find_arr_size(arr_cmd) + 2));
 	if (!new_array)
 		return (NULL);
 	while (arr_cmd[i])
 	{
-		new_array[i] = malloc(sizeof(char) * (ft_strlen(arr_cmd[i]) + 1));
+		new_array[i] = ft_strdup(arr_cmd[i]);
 		if (!new_array[i])
 			return (NULL);
-		ft_strlcpy(new_array[i], arr_cmd[i], (ft_strlen(arr_cmd[i]) + 1));
 		i++;
 	}
-	new_array[i] = malloc(sizeof(char) * (ft_strlen(word) + 1));
+	new_array[i] = ft_strdup(word);
 	if (!new_array[i])
 		return (NULL);
-	ft_strlcpy(new_array[i], word, (ft_strlen(word) + 1));
-	i++;
-//	free(word); // si luego libero todos los lex_lst tokens esto me daria doble free?
-	new_array[i] = NULL;
+	new_array[++i] = NULL;
 	free_array(arr_cmd);
 	return (new_array);
 }
@@ -132,27 +95,10 @@ t_cmd	*tkn_to_cmd(t_lex_lst *tokens)
 	aux_cmd = cmd;
 	while (tokens)
 	{
-		if (tokens->type == INPUT || tokens->type == OUTPUT || tokens->type == HEREDOC || tokens->type == APPEND)
+		if (!classify_tkn(&tokens, &aux_cmd))
 		{
-			if (add_redir(tokens, aux_cmd) == 2)
-			{
-				write(2, "add_redir failed\n", 17);
-				return (NULL); //Liberar los cmd si falla el malloc
-			}
-			tokens = tokens->next;
-		}
-		else if (tokens->word)
-		{
-			aux_cmd->arr_cmd = add_to_array(tokens->word, aux_cmd->arr_cmd);
-			if (!aux_cmd->arr_cmd)
-				return (NULL); //Liberar los cmd si falla el malloc
-		}
-		else if (tokens->type == PIPE)
-		{
-			aux_cmd->next = create_cmd_node();
-			if (!aux_cmd->next)
-				return (NULL); //Liberar los cmd si falla el malloc
-			aux_cmd = aux_cmd->next;
+			free_cmds(cmd);
+			return (NULL);
 		}
 		tokens = tokens->next;
 	}
@@ -178,6 +124,15 @@ t_cmd	*tkn_to_cmd(t_lex_lst *tokens)
 
 	tokens = malloc(sizeof(t_lex_lst) * 1);
 	if (!tokens)
+		return (1);
+	tokens->word = NULL;
+	tokens->type = INPUT;
+	tokens->t_content = "<";
+	tokens->next = NULL;
+
+	tokens2 = malloc(sizeof(t_lex_lst) * 1);
+	if (!tokens2)
+		return (1);
 		return (1);
 	tokens->word = NULL;
 	tokens->type = INPUT;
@@ -290,56 +245,5 @@ t_cmd	*tkn_to_cmd(t_lex_lst *tokens)
 	print_cmds(cmd);
 	free_lexlst(tokens);
 	free_cmds(cmd);
-	return (0);
-}*/
-
-/*int	main(void)
-{
-	char	*str;
-	char	*str2;
-	char	*str3;
-	char	**arr;
-	int		i;
-
-	i = 0;
-	str = "hola";
-	arr = add_to_array(str, NULL);
-	while (arr[i])
-	{
-		printf("arr[%d]: %s\n", i, arr[i]);
-		i++;
-	}
-	write(2, "\n", 1);
-	str2 = malloc(sizeof(char) * 5);
-	str2[0] = 'c';
-	str2[1] = 'h';
-	str2[2] = 'a';
-	str2[3] = 'o';
-	str2[4] = '\0';
-	arr = add_to_array(str2, arr);
-	i = 0;
-	free(str2);
-	while (arr[i])
-	{
-		printf("arr[%d]: %s\n", i, arr[i]);
-		i++;
-	}
-	write(2, "\n", 1);
-	str3 = malloc(sizeof(char) * 5);
-	str3[0] = 't';
-	str3[1] = 'e';
-	str3[2] = 's';
-	str3[3] = 't';
-	str3[4] = '\0';
-	arr = add_to_array(str3, arr);
-	i = 0;
-	while (arr[i])
-	{
-		printf("arr[%d]: %s\n", i, arr[i]);
-		i++;
-	}
-	write(2, "\n", 1);
-	free(str3);
-	free_array(arr);
 	return (0);
 }*/

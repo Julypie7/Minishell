@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/16 16:40:12 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/17 16:19:49 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,12 @@ int	start_reading(t_info *info)
 			continue;
 		}
 		cmds = tkn_to_cmd(info->tokens);
+		if (!cmds)
+		{
+			free_lexlst(info->tokens);
+			free(info->rl);
+			exit(-1); // malloc err
+		}
 //		print_cmds(cmds);
 		free_lexlst(info->tokens);
 		info->ex_stat = executor(cmds, info);

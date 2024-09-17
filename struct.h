@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/16 16:29:14 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/16 17:21:33 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ typedef struct s_cmd
 	int		fd_out; // para las redirs de output
 //(se van actualizando prq los voy sobreescribiendo)
 	t_redir	*redirs;
-//	int		indx; // cuál comando es
 	struct s_cmd	*next;
 }	t_cmd;
 
