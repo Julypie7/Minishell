@@ -6,17 +6,75 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 20:30:32 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/18 15:09:51 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:34:07 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "struct.h"
 #include "execution.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/wait.h>
+
+void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
+{
+	if (open_redir(cmd) == 1)
+	{
+		free_child(info, cmd, exec_info);
+		exit(1);
+	}
+	if (redirect(cmd) == 1)
+	{
+		free_child(info, cmd, exec_info);
+		exit(1);
+	}
+	close(exec_info->pipe_end[0]); // cierro el fd de lectura de la pipe ACTUAL
+	if (!cmd->arr_cmd)
+	{
+		free_child(info, cmd, exec_info);
+		exit(0);
+	}
+	if (!find_cmd_type(cmd->arr_cmd[0]))
+		exec_builtin(cmd->arr_cmd);
+	if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
+	{
+		cmd_not_found(cmd->path);
+		free_child(info, cmd, exec_info);
+		exit(127);
+	}
+}
+
+void	simp_child_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
+{
+	if (open_redir(cmd) == 1)
+	{
+		free_child(info, cmd, exec_info);
+		exit(1);
+	}
+	if (!cmd->arr_cmd)
+	{
+		free_child(info, cmd, exec_info);
+		exit(0);
+	}
+	if (redirect(cmd) == 1)
+	{
+		free_child(info, cmd, exec_info);
+		exit(1);
+	}
+	if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
+	{
+		cmd_not_found(cmd->path);
+		free_child(info, cmd, exec_info);
+		exit(127);
+	}
+}
+
+void	free_child(t_info *info, t_cmd *cmds, t_exec *exec_info)
+{
+	free_cmds(cmds);
+	free_envlst(info->envp);
+	free_exec_info(exec_info);
+	clear_history();
+	free(info->rl);
+}
 
 int	heredoc(char *lim)
 {

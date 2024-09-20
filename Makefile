@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = main.c env_utils.c env_utils2.c lexer_quots.c lexer.c token.c lexer_list.c err_messags.c exec_clean.c exec_utils.c pipex_utils.c syntax_err.c tkn_to_cmd.c parsing_utils.c exec_utils2.c
+SRC = main.c env_utils.c env_utils2.c lexer_quots.c lexer.c token.c lexer_list.c err_messags.c exec_clean.c exec_utils.c pipex_utils.c syntax_err.c tkn_to_cmd.c parsing_utils.c exec_utils2.c redir_utils.c
 
 OBJ = $(SRC:.c=.o)
 
