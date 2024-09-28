@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/20 15:31:01 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/29 00:12:46 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	exec_builtin(char **arr_cmd)
 int	prep_cmds(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
 	// expansion
+	// si !arr_cmd, return (0) pero NO quiero continuar con ejecucion O continuar pero preparlo todo para que no de segfault
 	cmd->path = find_path(exec_info->paths, cmd->arr_cmd);
 	if (!cmd->path)
 		return (1);
