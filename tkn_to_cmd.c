@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 13:36:23 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/17 14:35:08 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/24 18:44:58 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,16 +71,14 @@ char	**add_to_array(char *word, char **arr_cmd)
 		return (NULL);
 	while (arr_cmd[i])
 	{
-		new_array[i] = ft_strdup(arr_cmd[i]);
-		if (!new_array[i])
-			return (NULL);
+		new_array[i] = arr_cmd[i];
 		i++;
 	}
 	new_array[i] = ft_strdup(word);
 	if (!new_array[i])
 		return (NULL);
 	new_array[++i] = NULL;
-	free_array(arr_cmd);
+	free(arr_cmd);
 	return (new_array);
 }
 

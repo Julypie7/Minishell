@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/18 15:47:03 by martalop         ###   ########.fr       */
+/*   Updated: 2024/09/29 00:11:57 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_redir
 	t_type			type;
 	char			*file_name;
 	int				fd; // la uso para guardar heredoc
+//	int				amb_red; // ambiguous redirect
 	struct s_redir	*next;
 }	t_redir;
 
