@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 20:30:32 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/20 15:34:07 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/07 11:41:40 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
 		exit(0);
 	}
 	if (!find_cmd_type(cmd->arr_cmd[0]))
-		exec_builtin(cmd->arr_cmd);
+	{
+		exec_builtin(cmd->arr_cmd, info, cmd, exec_info);
+		free_child(info, cmd, exec_info);
+		exit(0);
+	}
 	if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
 	{
 		cmd_not_found(cmd->path);

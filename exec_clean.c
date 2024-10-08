@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/29 00:12:46 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/04 17:46:29 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,22 @@ int	find_cmd_type(char *str)
 	return (1); // es cmd
 }
 
-int	exec_builtin(char **arr_cmd)
+int	exec_builtin(char **arr_cmd, t_info *info, t_cmd *cmds, t_exec *exec_info)
 {
-	(void)arr_cmd;
-	return (0);
+	if (ft_strcmp(arr_cmd[0], "pwd") == 0)
+		return (mini_pwd(info->envp));
+	else if (ft_strcmp(arr_cmd[0], "cd") == 0)
+		return (mini_cd(arr_cmd, info));
+	else if (ft_strcmp(arr_cmd[0], "env") == 0)
+		return (mini_env(arr_cmd, info));
+	else if (ft_strcmp(arr_cmd[0], "echo") == 0)
+		return (mini_echo(arr_cmd));
+	else if (ft_strcmp(arr_cmd[0], "unset") == 0)
+		return (mini_unset(arr_cmd, info));
+	else if (ft_strcmp(arr_cmd[0], "export") == 0)
+		return (mini_export(arr_cmd, info));
+	else
+		return (mini_exit(arr_cmd, info, cmds, exec_info));
 }
 
 int	prep_cmds(t_cmd *cmd, t_info *info, t_exec *exec_info)
@@ -117,12 +129,12 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
 	if (prep_cmds(cmd, info, exec_info) == 1)
 		return (2);
-	/*if (!find_cmd_type(cmd->arr_cmd[0]))
+	if (!find_cmd_type(cmd->arr_cmd[0]))
 	{
 		open_redir(cmd);
 		redirect(cmd);
-		return (exec_builtin(cmd->arr_cmd));
-	}*/
+		return (exec_builtin(cmd->arr_cmd, info, cmd, exec_info));
+	}
 	cmd->pid = fork();
 	if (cmd->pid == -1)
 		return (1);

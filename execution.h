@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/20 15:31:58 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:05:54 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int		open_output(t_redir *tmp, t_cmd *cmd);
 int		redirect(t_cmd *cmd);
 int		count_cmds(char *rl);
 int		executor(t_cmd *segmts, t_info *info);
-int		exec_builtin(char **arr_cmd);
+int     exec_builtin(char **arr_cmd, t_info *info, t_cmd *cmds, t_exec *exec_info);
 int		exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info);
 int		exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info);
 void	simp_child_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info);
@@ -51,5 +51,8 @@ void	free_child(t_info *info, t_cmd *cmds, t_exec *exec_info);
 // BUILTIN CHECK
 int		fill_arr_b(char **arr_b);
 int		find_cmd_type(char *str);
+
+char	*ft_strcpy(char *s1, char *s2);
+int ft_strcmp(char *s1, char *s2);
 
 #endif

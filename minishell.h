@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/17 18:49:03 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/01 16:11:16 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include "struct.h"
 # include "parsing.h"
 # include "execution.h"
+# include "builtin.h"
+# include "libft/libft.h"
 
 // initial functions
 int		start_reading(t_info *info);

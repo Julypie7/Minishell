@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/17 16:43:44 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/07 15:59:57 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	start_reading(t_info *info)
 			free(info->rl);
 			exit(-1); // malloc err
 		}
-//		print_cmds(cmds);
+	//	print_cmds(cmds);
 		free_lexlst(info->tokens);
 		info->ex_stat = executor(cmds, info);
 		printf("exit status: %d\n", info->ex_stat);
