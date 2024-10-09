@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 16:24:08 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/08 18:37:22 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/09 15:22:55 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,32 @@ int	not_in_env(t_info *info, char *export)
 {
 	t_envp	*tmp;
 	int		i;
+	int		flag;
 
+	flag = 1;
 	tmp = info->copy;
 	i = find_equal(export);
 	if (i)
 	{
 		while (tmp)
 		{
-			if (ft_strcmp(tmp->key, export) == 0)
+			if (ft_strncmp(tmp->key, export, ft_strlen(tmp->key)) == 0)
 			{
-				if (check_change_copy(info->copy, export, i) == 2)
-					return (2);
-				i = change_copy_equal(export, info->envp, i);
-				return (i);
+				flag = check_change_copy(info->copy, export, i);
+				if (exists_in_env(info->envp, export))
+				{
+					i = change_copy_equal(export, info->envp, i);
+						return (i);
+				}
 			}
 			tmp = tmp->next;
 		}
-		if (add_node_to_copy(info, info->copy, export) == 2)
+		if (flag)
+		{
+			if (add_node_to_copy(info, info->copy, export) == 2)
+				return (2);
+		}
+		if (flag == 2)
 			return (2);
 		i = add_node_to_copy(info, info->envp, export);
 		return (i);
@@ -56,13 +65,17 @@ int	add_node_to_copy(t_info *info, t_envp *env, char *export)
 	i = find_equal(export);
 	if (i)
 	{
+		printf("here");
 		if (add_node_ch_val(tmp, i, export) == 2)
 			return (2);
 	}
 	else
 	{
-		if (add_node_without_val(tmp, 0, export) == 2)
-			return (2);
+		if (exists_in_env(info->copy, export) == 0)
+		{
+			if (add_node_without_val(tmp, 0, export) == 2)
+				return (2);
+		}
 	}
 	return (0);
 }
@@ -79,7 +92,7 @@ int	check_change_copy(t_envp *copy, char *export, int i)
 		e = find_equal(tmp->key);
 		if (!e)
 		{
-			if (ft_strncmp(tmp->key, export, ft_strlen(tmp->key) == 0))
+			if (ft_strncmp(tmp->key, export, ft_strlen(tmp->key)) == 0)
 				return (copy_without_equal(tmp, export, i, e));
 		}
 		else

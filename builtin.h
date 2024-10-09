@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:44:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/08 18:37:40 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/09 12:12:28 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int			add_node_ch_val(t_envp *tmp, int i, char *export);
 int			add_node_without_val(t_envp *tmp, int i, char *export);
 int			copy_without_equal(t_envp *tmp, char *export, int i, int q);
 int			copy_with_eq(t_envp *tmp, char *export, int i);
+int			exists_in_env(t_envp *env, char *export);
 
 //void	ft_putstr_fd(char *s, int fd);
 int			ft_strcmp(char *s1, char *s2);
