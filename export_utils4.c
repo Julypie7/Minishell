@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:50:29 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 13:01:13 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/09 15:57:18 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	copy_without_equal(t_envp *tmp, char *export, int i, int q)
 	tmp->key = ft_substr(export, 0, i + 1);
 	printf("%s\n", tmp->key);
 	if (export[ft_strlen(tmp->key)] != 0)
-		tmp->value = ft_substr(export, i, ft_strlen(export) - i);
+		tmp->value = ft_substr(export, i + 1, ft_strlen(export) - i);
 	else
 	{
 		tmp->value = malloc(sizeof(char));

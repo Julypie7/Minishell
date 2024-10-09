@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 16:24:08 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 15:22:55 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:05:13 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,33 @@ int	not_in_env(t_info *info, char *export)
 		return (add_node_to_copy(info, info->copy, export));
 }
 
+int	exists_in_copy(t_envp *env, char *export)
+{
+	t_envp	*tmp;
+
+
+	tmp = env;
+	if (find_equal(export))
+	{
+		while (tmp)
+		{
+			if (ft_strncmp(tmp->key, export, ft_strlen(tmp->key)) == 0)
+				return (1);
+			tmp = tmp->next;		
+		}
+	}
+	else
+	{
+		while (tmp)
+		{
+			if (ft_strncmp(tmp->key, export, ft_strlen(export)) == 0)
+				return (1);
+			tmp = tmp->next;
+		}
+	}
+	return (0);
+}
+
 int	add_node_to_copy(t_info *info, t_envp *env, char *export)
 {
 	t_envp	*new;
@@ -71,7 +98,7 @@ int	add_node_to_copy(t_info *info, t_envp *env, char *export)
 	}
 	else
 	{
-		if (exists_in_env(info->copy, export) == 0)
+		if (exists_in_copy(info->copy, export) == 0)
 		{
 			if (add_node_without_val(tmp, 0, export) == 2)
 				return (2);

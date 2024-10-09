@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/07 15:59:57 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:08:21 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	start_reading(t_info *info)
 //		info->exit = do_shell(info->rl, info);
 		if (!lexer(info))
 			exit (0);
-	//	print_lex_lst(info->tokens);
+		print_lex_lst(info->tokens);
 		if (simple_syntax(info->tokens) == 1)
 		{
 			free(info->rl);

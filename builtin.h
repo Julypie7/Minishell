@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:44:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 12:12:28 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/09 16:15:37 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int			size_of_argv(char **argv);
 void		print_echo(char **argv, int i);
 
 //UNSET
-t_envp		*do_unset(t_info *info, t_envp *to_unset);
+t_envp		*do_unset(t_envp *list, t_envp *to_unset);
 int			mini_unset(char **argv, t_info *info);
 
 //CD
