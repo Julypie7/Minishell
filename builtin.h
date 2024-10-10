@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:44:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/10 12:14:06 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 12:32:27 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,5 @@ int			copy_with_eq(t_envp *tmp, char *export, int i);
 int			exists_in_env(t_envp *env, char *export);
 int			exists_in_copy(t_envp *env, char *export);
 int			handle_env_copy(t_info *info, char *export, int i, int flag);
-
-//void	ft_putstr_fd(char *s, int fd);
-int			ft_strcmp(char *s1, char *s2);
-char		*ft_strcpy(char *s1, char *s2);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 13:00:48 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/01 16:11:16 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 12:32:10 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,8 @@ void	add_node_to_env(t_envp **lst, t_envp *node);
 int		find_equal(char *str);
 t_envp	*env_to_list(char **env);
 char	**envlst_to_arr(t_envp *envp);
+int		ft_strcmp(char *s1, char *s2);
+char	*ft_strcpy(char *s1, char *s2);
+
 
 #endif

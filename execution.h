@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 17:51:10 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/02 14:05:54 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 12:32:43 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,5 @@ void	free_child(t_info *info, t_cmd *cmds, t_exec *exec_info);
 // BUILTIN CHECK
 int		fill_arr_b(char **arr_b);
 int		find_cmd_type(char *str);
-
-char	*ft_strcpy(char *s1, char *s2);
-int ft_strcmp(char *s1, char *s2);
 
 #endif
