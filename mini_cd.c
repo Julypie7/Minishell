@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:34:31 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 17:23:07 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 11:51:12 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,9 @@ int	just_cd(t_envp *lst, char *path, t_info *info)
 	tmp = lst;
 	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
-	{
-		printf("cd: error retrieving current directory");
-		free(pwd);
-		return (0);
-	}
+		return (free_pwd(pwd), 0);
 	if (check_var_exist(path, info) == 1)
-	{
-		free(pwd);
-		return (1);
-	}
+		return (free(pwd), 1);
 	change_pwd(tmp);
 	while (tmp)
 	{

@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 16:24:08 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 16:05:13 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 12:17:25 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,18 @@
 #include "libft/libft.h"
 #include "builtin.h"
 #include "struct.h"
+
+int	handle_env_copy(t_info *info, char *export, int i, int flag)
+{
+	int	res;
+
+	res = 0;
+	if (flag && flag != 2)
+		res = add_node_to_copy(info, info->copy, export);
+	if (flag == 2 || i == 2)
+		return (2);
+	return (add_node_to_copy(info, info->envp, export));
+}
 
 int	not_in_env(t_info *info, char *export)
 {
@@ -32,52 +44,14 @@ int	not_in_env(t_info *info, char *export)
 			{
 				flag = check_change_copy(info->copy, export, i);
 				if (exists_in_env(info->envp, export))
-				{
-					i = change_copy_equal(export, info->envp, i);
-						return (i);
-				}
+					return (change_copy_equal(export, info->envp, i));
 			}
 			tmp = tmp->next;
 		}
-		if (flag)
-		{
-			if (add_node_to_copy(info, info->copy, export) == 2)
-				return (2);
-		}
-		if (flag == 2)
-			return (2);
-		i = add_node_to_copy(info, info->envp, export);
-		return (i);
+		return (handle_env_copy(info, export, i, flag));
 	}
 	else
 		return (add_node_to_copy(info, info->copy, export));
-}
-
-int	exists_in_copy(t_envp *env, char *export)
-{
-	t_envp	*tmp;
-
-
-	tmp = env;
-	if (find_equal(export))
-	{
-		while (tmp)
-		{
-			if (ft_strncmp(tmp->key, export, ft_strlen(tmp->key)) == 0)
-				return (1);
-			tmp = tmp->next;		
-		}
-	}
-	else
-	{
-		while (tmp)
-		{
-			if (ft_strncmp(tmp->key, export, ft_strlen(export)) == 0)
-				return (1);
-			tmp = tmp->next;
-		}
-	}
-	return (0);
 }
 
 int	add_node_to_copy(t_info *info, t_envp *env, char *export)
@@ -85,14 +59,13 @@ int	add_node_to_copy(t_info *info, t_envp *env, char *export)
 	t_envp	*new;
 	t_envp	*tmp;
 	int		i;
-	
+
 	tmp = env;
 	while (tmp->next)
 		tmp = tmp->next;
 	i = find_equal(export);
 	if (i)
 	{
-		printf("here");
 		if (add_node_ch_val(tmp, i, export) == 2)
 			return (2);
 	}
@@ -154,33 +127,4 @@ void	print_env_sorted(t_info *info)
 			sorted = sorted->next;
 		}
 	}
-}
-
-t_envp	*sort_alg(t_envp *lst_export, t_envp *sorted)
-{
-	t_envp	*current;
-	t_envp	*the_next;
-	t_envp	*tmp;
-
-	current = lst_export;
-	while (current)
-	{
-		the_next = current->next;
-		if (!sorted || ft_strcmp(current->key, sorted->key) < 0)
-		{
-			current->next = sorted;
-			sorted = current;
-		}
-		else
-		{
-			tmp = sorted;
-			while (tmp->next && ft_strcmp(current->key,
-					tmp->next->key) >= 0)
-				tmp = tmp->next;
-			current->next = tmp->next;
-			tmp->next = current;
-		}
-		current = the_next;
-	}
-	return (sorted);
 }

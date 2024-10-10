@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 16:09:11 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 12:36:58 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 12:18:19 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ int	check_of_arg(char **argv, int len, t_info *info)
 {
 	while (argv[len])
 	{
-		/*if (argv[len][0] == '\0')
-			return (len - 1); //becuase of null arg which id coming from lexer;*/
 		if (parse_export(argv[len]) == 0)
 		{
 			printf("bash: export: `%s': not a valid identifier\n", argv[len]);

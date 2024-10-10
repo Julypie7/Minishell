@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:38:27 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 16:22:29 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 10:56:33 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_envp	*do_unset(t_envp *list, t_envp *to_unset)
 void	check_unset_copy(t_envp *copy, char *argv)
 {
 	t_envp	*current;
-	
+
 	current = copy;
 	while (current)
 	{
@@ -55,7 +55,6 @@ void	check_unset_copy(t_envp *copy, char *argv)
 			current = current->next;
 	}
 }
-
 
 int	mini_unset(char **argv, t_info *info)
 {

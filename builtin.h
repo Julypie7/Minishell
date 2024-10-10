@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:44:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 16:15:37 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 12:14:06 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int			mini_cd(char **argv, t_info *info);
 int			just_cd(t_envp *lst, char *path, t_info *info);
 void		change_pwd(t_envp *lst);
 char		*ft_getenv(char *str, t_envp *lst);
+void		free_pwd(char *pwd);
 
 //EXPORT
 int			mini_export(char **argv, t_info	*info);
@@ -74,6 +75,8 @@ int			add_node_without_val(t_envp *tmp, int i, char *export);
 int			copy_without_equal(t_envp *tmp, char *export, int i, int q);
 int			copy_with_eq(t_envp *tmp, char *export, int i);
 int			exists_in_env(t_envp *env, char *export);
+int			exists_in_copy(t_envp *env, char *export);
+int			handle_env_copy(t_info *info, char *export, int i, int flag);
 
 //void	ft_putstr_fd(char *s, int fd);
 int			ft_strcmp(char *s1, char *s2);
