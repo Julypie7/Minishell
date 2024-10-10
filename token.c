@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 10:33:28 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/21 14:13:02 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 18:57:56 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,16 @@ int	second_check(t_info *info, int i)
 {
 	if (info->rl[i] == '>' && info->rl[i + 1] == '>')
 	{
-		if(!add_node(NULL, ">>", info))
+		if (!add_node(NULL, ">>", info))
 		{
 			exit_free("err w append node", 2, info);
 			return (-1);
 		}
 		return (2);
-	}	
+	}
 	else if (info->rl[i] == '<' && info->rl[i + 1] == '<')
 	{
-		if(!add_node(NULL, "<<", info))
+		if (!add_node(NULL, "<<", info))
 		{
 			exit_free("err w heredoc node", 2, info);
 			return (-1);
@@ -49,7 +49,7 @@ int	check_token(t_info *info, int i)
 	{
 		if (info->rl[i + 1] == '>')
 			return (second_check(info, i));
-		else 
+		else
 		{
 			if (!add_node(NULL, ">", info))
 			{
@@ -64,23 +64,17 @@ int	check_token(t_info *info, int i)
 		if (info->rl[i + 1] == '<')
 			return (second_check(info, i));
 		else
-		{	
+		{
 			if (!add_node(NULL, "<", info))
 			{
 				exit_free("err w inp node", 2, info);
 				return (-1);
 			}
 		}
-		return(1);
+		return (1);
 	}
-	else 
+	else
 	{
-	/*	if (i == 0)
-		{
-			error_msg("Syntax error\n");
-			return (-1);
-		}
-		*/
 		if (!add_node(NULL, "|", info))
 		{
 			exit_free("err w pipe node", 2, info);

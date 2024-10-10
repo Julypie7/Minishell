@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 10:36:08 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/18 15:48:29 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/10 19:12:54 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,8 @@ void	exit_free(char *str, int i, t_info *info);
 void	free_lexlst(t_lex_lst *tokens);
 int		handle_word(t_info *info, int i);
 void	print_lex_lst(t_lex_lst *node);
+int		zero_case(t_info *info, int i);
+int		word(t_info *info, int i);
+int		avoid(char c);
 
 #endif

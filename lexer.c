@@ -6,7 +6,7 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/10 11:05:09 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 19:13:19 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,92 +24,31 @@ int	avoid(char c)
 int	ign_spaces(char *line, int i)
 {
 	int	j;
-	
+
 	j = 0;
-	while (avoid(line[i + j]))
+	while (line && avoid(line[i + j]))
 		j++;
 	return (j);
 }
 
-int handle_quotes(t_info *info, int i)
+int	word(t_info *info, int i)
 {
-	int j;
-
-	j = 1;
-	if (info->rl[i] == 39)
-	{
-		while (info->rl[i + j] != 39)
-			j++;
-		return (++j);
-	}
-	else if (info->rl[i] == 34)
-	{
-		while (info->rl[i + j] != 34)
-			j++;
-		return (++j);
-	}
-	return (0);
-}
-	
-int check_inside(t_info *info, int i)
-{
-	int j;
-
-	j = 0;
-	if (info->rl[i] == 39)
-	{
-		while (info->rl[++i] != 39)
-			i++;
-		while (info->rl[i] != 39)
-		{
-			if (info->rl[i] >= 33 && info->rl[i] <= 126)
-			   j++;
-			i--;
-		}
-		if (j > 0)
-			return (1);
-		else
-			return (0);
-	}
-	else
-	{
-		while (info->rl[++i] != 34)
-			i++;
-		while (info->rl[i] != 34)
-		{
-			if (info->rl[i] >= 33 && info->rl[i] <= 126)
-			   j++;
-			i--;
-		}
-		if (j > 0)
-			return (1);
-		else
-			return (0);
-	}
-}
-				
-int word(t_info *info, int i)
-{
-	int j;
+	int	j;
 
 	j = 0;
 	if (info->rl[i + j] == 39 || info->rl[i + j] == 34)
 	{
-			/*if (!check_inside(info, i))
-			{
-				j = handle_quotes(info, i);
-				return (j);
-			}
-			if (check_inside(info, i))
-			{*/
 		j = handle_quotes(info, i);
 		if (!add_node(ft_substr(info->rl, i, j), NULL, info))
 			return (-1);
 		return (j);
 	}
-	while (info->rl[i + j] && info->rl[j + i] != ' ')
+	while (info->rl[i + j] && info->rl[j + i] != ' ' \
+			&& !token_exist(info->rl[i + j]))
 	{
-		if (avoid(info->rl[i + j]))
+		if (info->rl[i + j] == 39 || info->rl[i + j] == 34)
+			j += handle_quotes(info, j + i);
+		else if (avoid(info->rl[i + j]))
 			return (j);
 		else
 			j++;
@@ -119,16 +58,37 @@ int word(t_info *info, int i)
 	return (j);
 }
 
-int lexer(t_info *info)
+int	zero_case(t_info *info, int i)
 {
-	int i;
-	int j;
-	
+	int	n;
+
+	n = 0;
+	while (info->rl[i])
+	{
+		if (info->rl[i] == ' ' && (!info->rl[i + 1] || info->rl[i + 1] == ' '))
+			if (i == 0 || info->rl[i - 1] == ' ')
+				n++;
+		i++;
+	}
+	if (i == n)
+		return (1);
+	return (0);
+}
+
+int	lexer(t_info *info)
+{
+	int	i;
+	int	j;
+
 	i = 0;
 	j = 0;
+	if (zero_case(info, i))
+		return (0);
 	while (info->rl[i])
 	{
 		i += ign_spaces(info->rl, i);
+		if (!info->rl[i])
+			return (1);
 		if (token_exist(info->rl[i]))
 			j = check_token(info, i);
 		else

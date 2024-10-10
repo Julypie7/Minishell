@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 14:32:50 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/09/09 15:09:17 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/10 19:17:39 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,20 @@ void	print_lex_lst(t_lex_lst *node)
 		return ;
 	while (tmp)
 	{
-		printf("%p\nword: %s\ntype: %d\nt_content: %s\nnext: %p\n\n", tmp, tmp->word, tmp->type, tmp->t_content, tmp->next);
+		printf("%p\nword: %s\ntype: %d\nt_content: \
+				%s\nnext: %p\n\n", tmp, tmp->word, \
+				tmp->type, tmp->t_content, tmp->next);
 		tmp = tmp->next;
 	}
 }
 
 t_lex_lst	*new_node(char *str, char *token, t_info *info)
 {
-	t_lex_lst *new_node;
-	//int	i = 0;
+	t_lex_lst	*new_node;
 
 	new_node = malloc(sizeof(t_lex_lst) * 1);
 	if (!new_node)
-	{
 		exit_free("malloc err of new node lexer\n", 2, info);
-		exit (1);
-	}
 	new_node->word = str;
 	if (token && token[0])
 	{
@@ -54,7 +52,6 @@ t_lex_lst	*new_node(char *str, char *token, t_info *info)
 	else
 		new_node->type = 0;
 	new_node->t_content = token;
-//	new_node->elem = i++;
 	new_node->next = NULL;
 	return (new_node);
 }
@@ -67,7 +64,7 @@ void	add_new_node(t_lex_lst *node, t_lex_lst **tokens)
 	if (*tokens == NULL)
 	{
 		*tokens = node;
-		return;
+		return ;
 	}
 	while (tmp && tmp->next != NULL)
 		tmp = tmp->next;
@@ -77,14 +74,12 @@ void	add_new_node(t_lex_lst *node, t_lex_lst **tokens)
 int	add_node(char *str, char *token, t_info *info)
 {
 	t_lex_lst	*node;
-	
+
 	node = NULL;
 	node = new_node(str, token, info);
 	if (!node)
 		return (0);
-//	printf("token: %p\n", info->tokens);
 	add_new_node(node, &(info->tokens));
-//	print_lex_lst(node);
 	return (1);
 }
 
@@ -97,7 +92,6 @@ void	free_lexlst(t_lex_lst *tokens)
 	{
 		tmp = tmp->next;
 		free(tokens->word);
-		//free(tokens->t_content);
 		free(tokens);
 		tokens = tmp;
 	}

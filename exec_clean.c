@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/04 17:46:29 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 17:37:28 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
 	if (prep_cmds(cmd, info, exec_info) == 1)
 		return (2);
-	if (!find_cmd_type(cmd->arr_cmd[0]))
+	if (cmd->arr_cmd && !find_cmd_type(cmd->arr_cmd[0]))
 	{
 		open_redir(cmd);
 		redirect(cmd);

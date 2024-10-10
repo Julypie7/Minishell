@@ -6,24 +6,13 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 13:31:23 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/21 13:34:11 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 19:26:42 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "lexer.h"
 #include "libft/libft.h"
-/*
-static size_t	ft_strlen(char *s)
-{
-	size_t	e;
-
-	e = 0;
-	while (s[e] != '\0')
-		e++;
-	return (e);
-}
-*/
 
 void	error_msg(char *str)
 {
@@ -42,58 +31,50 @@ void	exit_free(char *str, int i, t_info *info)
 		free_envlst(info->envp);
 		if (info->tokens != NULL)
 			free_lexlst(info->tokens);
+		exit (1);
 	}
 }
 
-int valid_line(t_info *info)
+int	valid_line(t_info *info)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (info->rl[i])
 	{
-		if (info->rl[i] == '"')
+		if (info->rl[i] == '"' || info->rl[i] == 39)
 		{
 			i++;
-			while(info->rl[i] != '"' && info->rl[i] != '\0')
+			while ((info->rl[i] != '"' || info->rl[i] != 39) \
+					&& info->rl[i] != '\0')
 				i++;
-			if(info->rl[i] == '\0')
-				{
-					error_msg("Doble quotes are not closed\n");
-					return(0);
-				}
+			if (info->rl[i] == '\0')
+				return (error_msg("Quotes are not closed\n"), 0);
 		}
-		if (info->rl[i] == 39)
-		{
+		if (info->rl[i])
 			i++;
-			while (info->rl[i] != 39 && info->rl[i] != '\0')
-				i++;
-			if(info->rl[i] == '\0')
-			{
-				error_msg("Single quotes aren't closed\n");
-				return(0);
-			}
-		}
-		if(info->rl[i])
-			i++;
-		if (info->rl[i] =='\0')
+		if (info->rl[i] == '\0')
 			return (1);
 	}
 	return (1);
 }
-/*
-int main()
+
+int	handle_quotes(t_info *info, int i)
 {
-	char *str;
-	
-	while (1)
+	int	j;
+
+	j = 1;
+	if (info->rl[i] == 39)
 	{
-		str = readline("Prompt >");
-		valid_line(str);
-		free(str);
+		while (info->rl[i + j] != 39)
+			j++;
+		return (++j);
 	}
-	rl_clear_history();
+	else if (info->rl[i] == 34)
+	{
+		while (info->rl[i + j] != 34)
+			j++;
+		return (++j);
+	}
 	return (0);
-}*/
-
-
+}
