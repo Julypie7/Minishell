@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:44:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/10 12:32:27 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/11 14:53:15 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include "libft/libft.h"
+# include "minishell.h"
 
 //EXIT
 int			mini_exit(char **av, t_info *info, t_cmd *cmds, t_exec *exec_info);
