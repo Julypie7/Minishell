@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 10:33:28 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/10 18:57:56 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/11 12:30:07 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,36 +43,42 @@ int	second_check(t_info *info, int i)
 	return (1);
 }
 
+int	redirect_out(t_info *info, int i)
+{
+	if (info->rl[i + 1] == '>')
+		return (second_check(info, i));
+	else
+	{
+		if (!add_node(NULL, ">", info))
+		{
+			exit_free("err w out node", 2, info);
+			return (-1);
+		}
+	}
+	return (1);
+}
+
+int	redirect_in(t_info *info, int i)
+{
+	if (info->rl[i + 1] == '<')
+		return (second_check(info, i));
+	else
+	{
+		if (!add_node(NULL, "<", info))
+		{
+			exit_free("err w inp node", 2, info);
+			return (-1);
+		}
+	}
+	return (1);
+}
+
 int	check_token(t_info *info, int i)
 {
 	if (info->rl[i] == '>')
-	{
-		if (info->rl[i + 1] == '>')
-			return (second_check(info, i));
-		else
-		{
-			if (!add_node(NULL, ">", info))
-			{
-				exit_free("err w out node", 2, info);
-				return (-1);
-			}
-		}
-		return (1);
-	}
+		return (redirect_out(info, i));
 	else if (info->rl[i] == '<')
-	{
-		if (info->rl[i + 1] == '<')
-			return (second_check(info, i));
-		else
-		{
-			if (!add_node(NULL, "<", info))
-			{
-				exit_free("err w inp node", 2, info);
-				return (-1);
-			}
-		}
-		return (1);
-	}
+		return (redirect_in(info, i));
 	else
 	{
 		if (!add_node(NULL, "|", info))
