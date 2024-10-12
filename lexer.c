@@ -6,7 +6,7 @@
 /*   By: ineimatu <ineimatu@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 17:16:16 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/08/06 14:48:19 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/10 11:05:09 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	avoid(char c)
 
 int	ign_spaces(char *line, int i)
 {
-	int j;
+	int	j;
 	
 	j = 0;
 	while (avoid(line[i + j]))
