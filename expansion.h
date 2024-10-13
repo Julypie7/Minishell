@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 22:58:48 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 14:21:46 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 20:08:07 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,13 @@ int		find_quote_type(char *str);
 char	**divide_str(char *str);
 char	**join_all(char **arr);
 char	**my_special_split(char *final_str);
-char	**cmd_expansion(char **arr_cmd, t_envp *envp, int prev_ex_stat, \
-		int *malloc_flag);
+char	**cmd_expansion(char **arr_cmd, t_envp *envp, int prev_ex_stat);
 char	**divide_str(char *str);
 char	**full_expansion(char *str, t_envp *envp, int prev_ex_stat);
+char	**fill_words(char *s, char **array);
+int		handle_new_word(char *s, int *i, char **array, int word);
+int		handle_all(char *s, int *i, char **array);
+int		split_simp_quote(char *s, int *i, char **array);
+int		split_doubl_quote(char *s, int *i, char **array);
 
 #endif

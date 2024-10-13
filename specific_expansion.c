@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 14:19:19 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 14:19:56 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 22:03:30 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,55 +36,44 @@ int	expand_files(t_redir *redirs, t_envp *envp, int prev_ex_stat)
 	tmp_red = redirs;
 	while (tmp_red)
 	{
-//		tmp_red->file_name = ft_strdup("\"$test'\"hol\"$bla\"");
-//		printf("\ntmp_red->file_name: %s\n", tmp_red->file_name);
+	//	tmp_red->file_name = ft_strdup("\"$alksd\"$holla");
+	//	printf("\ntmp_red->file_name: %s\n", tmp_red->file_name);
 		aux = NULL;
 		aux = full_expansion(tmp_red->file_name, envp, prev_ex_stat);
 		if (!aux)
-		{
-			printf("expansion returns NULL\n");
 			return (1);
-		}
 		handle_expanded_redir(aux, tmp_red);
 		tmp_red = tmp_red->next;
 	}
 	return (0);
 }
 
-char	**cmd_expansion(char **arr_cmd, t_envp *envp, int prev_ex_stat, int *malloc_flag)
+char	**cmd_expansion(char **arr_cmd, t_envp *envp, int prev_ex_stat)
 {
 	int		i;
 	int		x;
 	char	**aux;
 	char	**new_cmd;
 
-	x = 0;
+	x = -1;
 	aux = NULL;
 	new_cmd = NULL;
-	while (arr_cmd && arr_cmd[x])
+	while (arr_cmd && arr_cmd[++x])
 	{
 		i = 0;
-	//	if (x == 1)
-	//	arr_cmd[x] = ft_strdup("\"akj\"shdkj\"aj'$shd\"la\'k \"\'js");
-	//	printf("arr_cmd[%d] before expansion: %s\n", x, arr_cmd[x]);
+	//	arr_cmd[x] = ft_strdup("' \" '\"$a'l'ksd\"$hollakas''");
+	//	printf("arr_cmd[x]: %s\n", arr_cmd[x]);
 		aux = full_expansion(arr_cmd[x], envp, prev_ex_stat);
 		if (!aux)
-		{
-			*malloc_flag += 1;
 			return (NULL);
-		}
 		while (aux && aux[i])
 		{
 			new_cmd = add_to_array(aux[i], new_cmd);
 			if (!new_cmd)
-			{
-				*malloc_flag += 1;
 				return (NULL);
-			}
 			i++;
 		}
 		free_array(aux);
-		x++;
 	}
 	free_array(arr_cmd);
 	return (new_cmd);

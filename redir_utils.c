@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 14:55:31 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/10 15:16:59 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 22:05:38 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	open_redir(t_cmd *cmd)
 	tmp = cmd->redirs;
 	while (tmp)
 	{
-		if (tmp->amb_red == 1)
+		if (tmp->amb_red == 1 && tmp->type != HEREDOC)
 		{
 			write(2, tmp->file_name, ft_strlen(tmp->file_name));
 			write(2, ": ambiguous redirect\n", 21);
@@ -127,6 +127,8 @@ int	open_output(t_redir *tmp, t_cmd *cmd)
 		cmd->fd_out = open(tmp->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (cmd->fd_out == -1)
 		{
+			if (tmp->file_name && !tmp->file_name[0])
+				write(2, " : ", 3);
 			perror(tmp->file_name);
 			return (1);
 		}
@@ -136,6 +138,8 @@ int	open_output(t_redir *tmp, t_cmd *cmd)
 		cmd->fd_out = open(tmp->file_name, O_WRONLY | O_APPEND | O_CREAT, 0644);
 		if (cmd->fd_out == -1)
 		{
+			if (tmp->file_name && !tmp->file_name[0])
+				write(2, " : ", 3);
 			perror(tmp->file_name);
 			return (1);
 		}

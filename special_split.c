@@ -6,13 +6,35 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 00:03:36 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/11 00:04:34 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 20:04:35 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "expansion.h"
 #include "struct.h"
+
+static void	skip_quote_content(const char *s, int *i)
+{
+	int	j;
+
+	j = *i;
+	if (s[j] == '\'')
+	{
+		j++;
+		while (s[j] && s[j] != '\'')
+			j++;
+	}
+	else if (s[j] == '\"')
+	{
+		j++;
+		while (s[j] && s[j] != '\"')
+			j++;
+	}
+	if (s[j])
+		j++;
+	*i = j;
+}
 
 static int	word_counter(const char *s)
 {
@@ -28,112 +50,63 @@ static int	word_counter(const char *s)
 		if (s[i])
 			word++;
 		while (s[i] && s[i] != ' ')
-		{
-			if (s[i] == '\'')
-			{
-				i++;
-				while (s[i] && s[i] != '\'')
-					i++;
-			}
-			else if (s[i] == '\"')
-			{
-				i++;
-				while (s[i] && s[i] != '\"')
-					i++;
-			}
-			if (s[i])
-				i++;
-		}
+			skip_quote_content(s, &i);
 	}
 	return (word);
 }
 
-char	**fill_words(char *s, char **array)
+int	split_simp_quote(char *s, int *i, char **array)
 {
-	int		i;
-	int		word;
-	int		ctr;
-	int		x;
-
-	word = 0;
-	ctr = 0;
-	x = 0;
-	i = 0;
-	while (s && s[i])
+	i[0]++;
+	i[1]++;
+	while (s[i[0]] && s[i[0]] != '\'')
 	{
-		while (s[i] == ' ')
-			i++;
-		if (s[i])
-			word++;
-		while (s[i] && s[i] != ' ')
-		{
-			if (s[i] == '\'')
-			{
-				i++;
-				ctr++;
-				while (s[i] && s[i] != '\'')
-				{
-					i++;
-					ctr++;
-				}
-				if (s[i] == '\'' && (!s[i + 1] || s[i + 1] == ' '))
-				{
-					i++;
-					ctr++;
-					array[x] = ft_substr(s, (i - ctr), ctr);
-					if (!array[x])
-						return (NULL);
-					ctr = 0;
-					x++;
-				}
-				else if (s[i] == '\'')
-				{
-					i++;
-					ctr++;
-				}
-			}
-			else if (s[i] == '\"')
-			{
-				i++;
-				ctr++;
-				while (s[i] && s[i] != '\"')
-				{
-					i++;
-					ctr++;
-				}
-				if (s[i] == '\"' && (!s[i + 1] || s[i + 1] == ' '))
-				{
-					i++;
-					ctr++;
-					array[x] = ft_substr(s, (i - ctr), ctr);
-					if (!array[x])
-						return (NULL);
-					ctr = 0;
-					x++;
-				}
-				else if (s[i] == '\"')
-				{
-					i++;
-					ctr++;
-				}
-			}
-			else if (s[i])
-			{
-				i++;
-				ctr++;
-			}
-		}
-		if ((s[i] == ' ' || (!s[i] && s[i - 1] != '\'' && s[i -1] != '\"')) && word && ctr > 0)
-		{
-			array[x] = ft_substr(s, i - ctr, ctr);
-			if (!array[x])
-				return (NULL);
-			ctr = 0;
-			x++;
-		}
+		i[0]++;
+		i[1]++;
 	}
-	array[x] = NULL;
-	return (array);
+	if (s[i[0]] == '\'' && (!s[i[0] + 1] || s[i[0] + 1] == ' '))
+	{
+		i[0]++;
+		i[1]++;
+		array[i[2]] = ft_substr(s, (i[0] - i[1]), i[1]);
+		if (!array[i[2]])
+			return (2);
+		i[1] = 0;
+		i[2]++;
+	}
+	else if (s[i[0]] == '\'')
+	{
+		i[0]++;
+		i[1]++;
+	}
+	return (0);
+}
+
+int	split_doubl_quote(char *s, int *i, char **array)
+{
+	i[0]++;
+	i[1]++;
+	while (s[i[0]] && s[i[0]] != '\"')
+	{
+		i[0]++;
+		i[1]++;
+	}
+	if (s[i[0]] == '\"' && (!s[i[0] + 1] || s[i[0] + 1] == ' '))
+	{
+		i[0]++;
+		i[1]++;
+		array[i[2]] = ft_substr(s, (i[0] - i[1]), i[1]);
+		if (!array[i[2]])
+			return (2);
+		i[1] = 0;
+		i[2]++;
+	}
+	else if (s[i[0]] == '\"')
+	{
+		i[0]++;
+		i[1]++;
+	}
+	return (0);
 }
 
 char	**my_special_split(char *s)

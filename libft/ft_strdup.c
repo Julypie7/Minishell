@@ -6,7 +6,7 @@
 /*   By: martalop <martalop@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 12:26:35 by martalop          #+#    #+#             */
-/*   Updated: 2024/01/23 14:43:03 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 20:54:58 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ char	*ft_strdup(const char *s1)
 	size_t	s1_len;
 
 	i = 0;
+	if (!s1)
+		return (NULL);
 	s1_len = ft_strlen(s1);
 	s2 = malloc(sizeof(char) * (s1_len + 1));
 	if (!s2)

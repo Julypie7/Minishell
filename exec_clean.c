@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/12 23:19:18 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 16:58:47 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,16 +89,9 @@ int	exec_builtin(char **arr_cmd, t_info *info, t_cmd *cmds, t_exec *exec_info)
 
 int	prep_cmds(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
-	int	cmd_flag;
-	int	malloc_flag;
-
-	cmd_flag = 0;
-	malloc_flag = 0;
 	if (cmd->arr_cmd)
 		cmd->arr_cmd = cmd_expansion(cmd->arr_cmd, info->envp, \
-				info->prev_ex_stat, &malloc_flag);
-	if (!cmd->arr_cmd && malloc_flag)
-		return (2);
+				info->prev_ex_stat);
 	cmd->path = find_path(exec_info->paths, cmd->arr_cmd);
 	if (!cmd->path)
 		return (2);
@@ -143,13 +136,13 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 		expand_files(cmd->redirs, info->envp, info->prev_ex_stat);
 		if (open_redir(cmd) == 1)
 		{
-			free_child(info, cmd, exec_info);
-			exit(1);
+			info->ex_stat = 256;
+			return (1);
 		}
 		if (redirect(cmd) == 1)
 		{
-			free_child(info, cmd, exec_info);
-			exit(1);
+			info->ex_stat = 256;
+			return (1);
 		}
 		return (exec_builtin(cmd->arr_cmd, info, cmd, exec_info));
 	}
