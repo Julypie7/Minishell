@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 22:58:48 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/12 22:59:28 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 14:21:46 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,7 @@ char	**join_all(char **arr);
 char	**my_special_split(char *final_str);
 char	**cmd_expansion(char **arr_cmd, t_envp *envp, int prev_ex_stat, \
 		int *malloc_flag);
+char	**divide_str(char *str);
+char	**full_expansion(char *str, t_envp *envp, int prev_ex_stat);
 
 #endif
