@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 00:03:36 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 20:04:35 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/14 00:37:18 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "expansion.h"
 #include "struct.h"
 
-static void	skip_quote_content(const char *s, int *i)
+void	skip_quote_content(const char *s, int *i)
 {
 	int	j;
 

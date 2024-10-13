@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/12 22:58:48 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 20:08:07 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/14 00:37:53 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,10 @@ int		handle_new_word(char *s, int *i, char **array, int word);
 int		handle_all(char *s, int *i, char **array);
 int		split_simp_quote(char *s, int *i, char **array);
 int		split_doubl_quote(char *s, int *i, char **array);
+char	**another_special_split(char *s);
+int		another_count_sections(char *s);
+int		find_simp_quote(char *str);
+int		find_double_quote(char *str);
+void	skip_quote_content(const char *s, int *i);
 
 #endif

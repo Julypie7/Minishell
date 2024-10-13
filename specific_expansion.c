@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 14:19:19 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 22:03:30 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/14 01:52:27 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ char	**cmd_expansion(char **arr_cmd, t_envp *envp, int prev_ex_stat)
 	while (arr_cmd && arr_cmd[++x])
 	{
 		i = 0;
-	//	arr_cmd[x] = ft_strdup("' \" '\"$a'l'ksd\"$hollakas''");
-	//	printf("arr_cmd[x]: %s\n", arr_cmd[x]);
+//		arr_cmd[x] = ft_strdup("'\"  '\"$a'l'ksd\"$hollakas''");
+//		printf("arr_cmd[x]: %s\n", arr_cmd[x]);
 		aux = full_expansion(arr_cmd[x], envp, prev_ex_stat);
 		if (!aux)
 			return (NULL);
