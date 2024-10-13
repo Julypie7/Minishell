@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 14:55:31 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/20 15:27:22 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/10 15:16:59 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ int	open_redir(t_cmd *cmd)
 	tmp = cmd->redirs;
 	while (tmp)
 	{
+		if (tmp->amb_red == 1)
+		{
+			write(2, tmp->file_name, ft_strlen(tmp->file_name));
+			write(2, ": ambiguous redirect\n", 21);
+			return (1);
+		}
 		if (tmp->type == INPUT || tmp->type == HEREDOC)
 		{
 			if (open_input(tmp, cmd) == 1)
@@ -93,6 +99,8 @@ int	open_input(t_redir *tmp, t_cmd *cmd)
 		cmd->fd_in = open(tmp->file_name, O_RDONLY);
 		if (cmd->fd_in == -1)
 		{
+			if (tmp->file_name && !tmp->file_name[0])
+				write(2, " : ", 3);
 			perror(tmp->file_name);
 			return (1);
 		}

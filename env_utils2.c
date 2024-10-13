@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 21:51:04 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/17 20:25:00 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/13 01:53:57 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void	print_char_arr(char **arr)
 	i = 0;
 	while (arr && arr[i])
 	{
+		printf("dir: %p\n", arr[i]);
 		printf("%s\n", arr[i]);
 		i++;
 	}

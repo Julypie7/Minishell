@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 12:54:35 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/17 14:36:04 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/04 14:11:41 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ int		add_first_rdir(t_lex_lst *tokens, t_cmd *cmd);
 int		add_rest_rdirs(t_lex_lst *tokens, t_cmd *cmd);
 t_cmd	*tkn_to_cmd(t_lex_lst *tokens);
 void	free_cmds(t_cmd *cmds);
+int		find_arr_size(char **array);
 
 #endif

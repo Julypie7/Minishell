@@ -6,15 +6,16 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 20:30:32 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/07 11:41:40 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/12 23:16:34 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "struct.h"
 #include "execution.h"
+#include "expansion.h"
 
-void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
+void	mult_child_redirs(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
 	if (open_redir(cmd) == 1)
 	{
@@ -26,7 +27,14 @@ void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
 		free_child(info, cmd, exec_info);
 		exit(1);
 	}
-	close(exec_info->pipe_end[0]); // cierro el fd de lectura de la pipe ACTUAL
+	close(exec_info->pipe_end[0]);
+}
+// I close pipe_end[0] of pipe ACTUAL
+
+void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
+{
+	expand_files(cmd->redirs, info->envp, info->prev_ex_stat);
+	mult_child_redirs(cmd, info, exec_info);
 	if (!cmd->arr_cmd)
 	{
 		free_child(info, cmd, exec_info);
@@ -40,7 +48,7 @@ void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
 	}
 	if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
 	{
-		cmd_not_found(cmd->path);
+		cmd_not_found(cmd->arr_cmd[0]);
 		free_child(info, cmd, exec_info);
 		exit(127);
 	}
@@ -48,6 +56,7 @@ void	mult_child(t_cmd *cmd, t_info *info, t_exec *exec_info)
 
 void	simp_child_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
+	expand_files(cmd->redirs, info->envp, info->prev_ex_stat);
 	if (open_redir(cmd) == 1)
 	{
 		free_child(info, cmd, exec_info);
@@ -65,7 +74,7 @@ void	simp_child_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 	}
 	if (execve(cmd->path, cmd->arr_cmd, exec_info->env) == -1)
 	{
-		cmd_not_found(cmd->path);
+		cmd_not_found(cmd->arr_cmd[0]);
 		free_child(info, cmd, exec_info);
 		exit(127);
 	}

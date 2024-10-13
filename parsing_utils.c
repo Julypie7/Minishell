@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 16:49:30 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/17 14:34:01 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/05 21:54:52 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	add_first_rdir(t_lex_lst *tokens, t_cmd *cmd)
 		return (0);
 	ft_strlcpy(cmd->redirs->file_name, tokens->next->word, (filename_len + 1));
 	cmd->redirs->fd = -1;
+	cmd->redirs->amb_red = 0;
 	cmd->redirs->next = NULL;
 	return (1);
 }
@@ -88,6 +89,7 @@ int	add_rest_rdirs(t_lex_lst *tokens, t_cmd *cmd)
 		return (0);
 	ft_strlcpy(tmp->next->file_name, tokens->next->word, (filename_len + 1));
 	tmp->next->fd = -1;
+	tmp->next->amb_red = 0;
 	tmp->next->next = NULL;
 	return (1);
 }

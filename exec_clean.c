@@ -6,13 +6,14 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/04 17:46:29 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/12 23:19:18 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft/libft.h"
 #include "execution.h"
+#include "expansion.h"
 #include "struct.h"
 
 int	fill_arr_b(char **arr_b)
@@ -88,12 +89,20 @@ int	exec_builtin(char **arr_cmd, t_info *info, t_cmd *cmds, t_exec *exec_info)
 
 int	prep_cmds(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
-	// expansion
-	// si !arr_cmd, return (0) pero NO quiero continuar con ejecucion O continuar pero preparlo todo para que no de segfault
+	int	cmd_flag;
+	int	malloc_flag;
+
+	cmd_flag = 0;
+	malloc_flag = 0;
+	if (cmd->arr_cmd)
+		cmd->arr_cmd = cmd_expansion(cmd->arr_cmd, info->envp, \
+				info->prev_ex_stat, &malloc_flag);
+	if (!cmd->arr_cmd && malloc_flag)
+		return (2);
 	cmd->path = find_path(exec_info->paths, cmd->arr_cmd);
 	if (!cmd->path)
-		return (1);
-	if (cmd->next) // quiero NO haga pipe para el último comando
+		return (2);
+	if (cmd->next)
 	{
 		pipe(exec_info->pipe_end);
 		cmd->fd_out = exec_info->pipe_end[1];
@@ -109,11 +118,11 @@ int	exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info)
 	cmd = tmp;
 	while (cmd)
 	{
-		if (prep_cmds(cmd, info, exec_info) == 1)
+		if (prep_cmds(cmd, info, exec_info) == 2)
 			return (2);
 		cmd->pid = fork();
 		if (cmd->pid == -1)
-			return (1);
+			return (2);
 		if (cmd->pid == 0)
 			mult_child(cmd, info, exec_info);
 		close(exec_info->pipe_end[1]); // cierro la parte de escritura de la pipe actual
@@ -127,12 +136,21 @@ int	exec_mult_cmd(t_cmd *tmp, t_exec *exec_info, t_info *info)
 
 int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 {
-	if (prep_cmds(cmd, info, exec_info) == 1)
+	if (prep_cmds(cmd, info, exec_info) == 2)
 		return (2);
-	if (!find_cmd_type(cmd->arr_cmd[0]))
+	if (cmd->arr_cmd && !find_cmd_type(cmd->arr_cmd[0]))
 	{
-		open_redir(cmd);
-		redirect(cmd);
+		expand_files(cmd->redirs, info->envp, info->prev_ex_stat);
+		if (open_redir(cmd) == 1)
+		{
+			free_child(info, cmd, exec_info);
+			exit(1);
+		}
+		if (redirect(cmd) == 1)
+		{
+			free_child(info, cmd, exec_info);
+			exit(1);
+		}
 		return (exec_builtin(cmd->arr_cmd, info, cmd, exec_info));
 	}
 	cmd->pid = fork();
@@ -151,7 +169,7 @@ int	set_exec_info(t_envp *envp, t_exec *exec_info)
 		return (1);
 	exec_info->paths = prep_cmd_paths(exec_info->env);
 	if (!exec_info->paths)
-		return (1);
+		return (free_array(exec_info->env), 1);
 	exec_info->or_fd[0] = dup(0);
 	exec_info->or_fd[1] = dup(1);
 	return (0);
@@ -181,30 +199,8 @@ int	executor(t_cmd *segmts, t_info *info)
 	{
 		info->ex_stat = 0;
 		waitpid(aux->pid, &info->ex_stat, 0);
-	//	printf("%d en cmd con pid %d\n", WEXITSTATUS(info->ex_stat), aux->pid);
 		aux = aux->next;
 	}
 	free_exec_info(&exec_info);
 	return (WEXITSTATUS(info->ex_stat));
 }
-
-
-/*int	main(int argc, char **argv, char **env)
-{
-	(void)argc;
-	t_info	info;
-	t_exec	*exec_info;
-	t_cmd	*cmds;
-
-	exec_info = set_exec_info(env, argv[1]); // todos los posibles paths, or_fds, etc
-	if (!exec_info)
-		return (write(2, "issue exec_info\n", 16), 1);
-	cmds = hardcore_commands(argv, env, exec_info->paths); // para findpath, get arr_cmd, etc
-	if (!cmds)
-	{
-		write(2, "problem hardcoring cmds\n", 24);
-		return (1);
-	}
-	printf("execution res: %d\n", executor(cmds, &info, exec_info));
-	return (0);
-}*/

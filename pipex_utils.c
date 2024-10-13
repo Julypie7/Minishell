@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 19:51:30 by martalop          #+#    #+#             */
-/*   Updated: 2024/09/09 20:45:22 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/10 22:35:42 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,13 @@ char	**create_empty_array(void)
 {
 	char	**arr;
 
-	arr = malloc(sizeof(char *) * 1);
+	arr = malloc(sizeof(char *) * 2);
 	if (!arr)
 		return (NULL);
 	arr[0] = ft_strdup("");
 	if (!arr[0])
 		return (NULL);
+	arr[1] = NULL;
 	return (arr);
 }
 

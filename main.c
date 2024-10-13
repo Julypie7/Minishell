@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 12:56:35 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/09 16:08:21 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/12 22:55:34 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	init_struct(t_info *info, char **env)
 {
 	info->rl = NULL;
 	info->ex_stat = 0;
+	info->prev_ex_stat = 0;
 	info->envp = env_to_list(env);
 	if (!info->envp)
 		return (1);
@@ -45,6 +46,7 @@ int	start_reading(t_info *info)
 	i = 0;
 	while (1)
 	{
+		info->prev_ex_stat = info->ex_stat;
 		info->ex_stat = 0;
 		info->rl = readline("our minishell: ");
 		if (!info->rl)
@@ -61,14 +63,24 @@ int	start_reading(t_info *info)
 //		info->exit = do_shell(info->rl, info);
 		if (!lexer(info))
 			exit (0);
-		print_lex_lst(info->tokens);
-		if (simple_syntax(info->tokens) == 1)
+//		print_lex_lst(info->tokens);
+		if (!info->tokens)
 		{
 			free(info->rl);
 			free_lexlst(info->tokens);
+			info->tokens = NULL;
+			info->ex_stat = info->prev_ex_stat;
+			i++;
+			continue;		
+		}
+		if (simple_syntax(info->tokens) == 2)
+		{
+			free(info->rl);
+			free_lexlst(info->tokens);
+			info->tokens = NULL;
 			info->ex_stat = 2;
 			i++;
-			printf("exit status: %d\n", info->ex_stat);
+//			printf("exit status: %d\n", info->ex_stat);
 			continue;
 		}
 		cmds = tkn_to_cmd(info->tokens);
