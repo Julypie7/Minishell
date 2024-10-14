@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 14:32:50 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/10 19:17:39 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/12 10:30:00 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ void	print_lex_lst(t_lex_lst *node)
 		return ;
 	while (tmp)
 	{
-		printf("%p\nword: %s\ntype: %d\nt_content: \
-				%s\nnext: %p\n\n", tmp, tmp->word, \
+		printf("%p\nword: %s\ntype: %d\nt_content: %s\nnext: %p\n\n", tmp, tmp->word, \
 				tmp->type, tmp->t_content, tmp->next);
 		tmp = tmp->next;
 	}

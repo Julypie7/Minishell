@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 13:31:23 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/10 19:26:42 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/14 15:06:39 by ineimatu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,23 @@ void	exit_free(char *str, int i, t_info *info)
 	}
 }
 
+int	skip_quote(char *rl, int *i, char quote)
+{
+	int	j;
+
+	j = *i;
+	j++;
+	while (rl[j] != quote && rl[j] != '\0')
+		j++;
+	if (rl[j] == '\0')
+	{
+		error_msg("Quotes are not closed\n");
+		return (0);
+	}
+	*i = j;
+	return (1);
+}
+
 int	valid_line(t_info *info)
 {
 	int	i;
@@ -42,14 +59,15 @@ int	valid_line(t_info *info)
 	i = 0;
 	while (info->rl[i])
 	{
-		if (info->rl[i] == '"' || info->rl[i] == 39)
+		if (info->rl[i] == 34)
 		{
-			i++;
-			while ((info->rl[i] != '"' || info->rl[i] != 39) \
-					&& info->rl[i] != '\0')
-				i++;
-			if (info->rl[i] == '\0')
-				return (error_msg("Quotes are not closed\n"), 0);
+			if (!skip_quote(info->rl, &i, 34))
+				return (0);
+		}
+		if (info->rl[i] == 39)
+		{
+			if (!skip_quote(info->rl, &i, 39))
+				return (0);
 		}
 		if (info->rl[i])
 			i++;
