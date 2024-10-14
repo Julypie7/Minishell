@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 21:51:04 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 17:31:18 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:06:46 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,29 @@ void	free_array(char **array)
 		i++;
 	}
 	free(array);
+}
+
+int	cmdlst_size(t_cmd *cmds)
+{
+	int	i;
+	t_cmd	*tmp;
+
+	i = 0;
+	tmp = cmds;
+	while (tmp)
+	{
+		if (tmp->next != NULL)
+		{
+			tmp = tmp->next;
+			i++;
+		}
+		else
+		{
+			i++;
+			break ;
+		}
+	}
+	return (i);
 }
 
 void	print_char_arr(char **arr)

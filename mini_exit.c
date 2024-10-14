@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 15:41:51 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/08 13:06:54 by ineimatu         ###   ########.fr       */
+/*   Updated: 2024/10/14 14:08:09 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 void	ft_exit(t_info *info, int ex_stat, t_cmd *cmds, t_exec *exec_info)
 {
-	printf("exit\n");
+	if (exec_info->cmd_num == 1 && !cmds->next)
+		printf("exit\n");
 	free_child(info, cmds, exec_info);
 	if (info->copy)
 		free_envlst(info->copy);

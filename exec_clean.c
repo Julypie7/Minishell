@@ -6,7 +6,7 @@
 /*   By: martalop <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 19:14:49 by martalop          #+#    #+#             */
-/*   Updated: 2024/10/13 16:58:47 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/14 13:47:21 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@ int	exec_simp_cmd(t_cmd *cmd, t_info *info, t_exec *exec_info)
 	return (0);
 }
 
-int	set_exec_info(t_envp *envp, t_exec *exec_info)
+int	set_exec_info(t_envp *envp, t_exec *exec_info, t_cmd *segmts)
 {
 	exec_info->env = envlst_to_arr(envp);
 	if (!exec_info->env)
@@ -165,6 +165,7 @@ int	set_exec_info(t_envp *envp, t_exec *exec_info)
 		return (free_array(exec_info->env), 1);
 	exec_info->or_fd[0] = dup(0);
 	exec_info->or_fd[1] = dup(1);
+	exec_info->cmd_num = cmdlst_size(segmts);
 	return (0);
 }
 
@@ -175,7 +176,7 @@ int	executor(t_cmd *segmts, t_info *info)
 
 	if (!segmts)
 		return (-1);
-	if (set_exec_info(info->envp, &exec_info) == 1)
+	if (set_exec_info(info->envp, &exec_info, segmts) == 1)
 		return (-1);
 	aux = segmts;
 	find_heredocs(segmts);

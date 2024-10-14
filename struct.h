@@ -6,7 +6,7 @@
 /*   By: ineimatu <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 13:07:01 by ineimatu          #+#    #+#             */
-/*   Updated: 2024/10/12 17:10:24 by martalop         ###   ########.fr       */
+/*   Updated: 2024/10/14 13:32:40 by martalop         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_exec
 	char	**paths;
 	int		or_fd[2];
 	char	**env;
+	int		cmd_num;
 	int		pipe_end[2];
 }	t_exec;
 
@@ -64,7 +65,6 @@ typedef struct s_lex_lst
 	char				*word;
 	t_type				type;
 	char				*t_content;
-	//int	elem;
 	struct s_lex_lst	*next;
 }	t_lex_lst;
 
